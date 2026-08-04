@@ -1,10 +1,13 @@
-function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] = guidance_law(current_position, path, progress_index, u_body, v_body)
+function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] = guidance_law(current_position, path, progress_index, u_body, v_body, U_h)
 % Path following guidance + beta compensation + limited pitch_ref.
 % pitch_ref_dot: physical pitch reference rate [rad/s]
+% U_h (optional): inertial horizontal speed hypot(x_dot,y_dot). If omitted,
+%   fallback U_h = hypot(u_body,v_body). Tur4A: r_ff = U_h * kappa (no 1.15*u_ref).
 
     global lookahead_distance desired_speed
     global pitch_ref_max pitch_ref_rate_max
     global dt_guidance dt_controller
+    global last_guidance_U_h last_guidance_kappa last_r_ff
 
     persistent s_prog yaw_cont pitch_f z_e_f z_e_i kappa_f chi_f yaw_out pitch_out initialized
     if isempty(initialized); initialized = false; end
@@ -22,6 +25,10 @@ function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] =
     end
     if nargin < 4 || isempty(u_body); u_body = 1.0; end
     if nargin < 5 || isempty(v_body); v_body = 0.0; end
+    if nargin < 6 || isempty(U_h)
+        U_h = hypot(u_body, v_body); % body-horizontal fallback
+    end
+    U_h = max(U_h, 0);
 
     n = size(path, 1);
     if n < 2
@@ -193,9 +200,13 @@ function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] =
     pitch_ref = pitch_out;
     pitch_ref_dot = dp / dt_nom;
 
-    % Feedforward yaw rate from smoothed curvature (slight boost for lag)
-    r_ff = 1.15 * u_ref * kappa_f;
+    % Tur4A: yaw-rate FF from inertial horizontal speed × path curvature
+    % (replaces 1.15*u_ref*kappa — u_ref was speed-scheduled down on curves)
+    r_ff = U_h * kappa_f;
     r_ff = max(min(r_ff, deg2rad(40)), deg2rad(-40));
+    last_guidance_U_h = U_h;
+    last_guidance_kappa = kappa_f;
+    last_r_ff = r_ff;
 
     % Integer index for suite progress (display / legacy)
     next_progress_index = max(1, min(n, 1 + sum(s_nodes <= s_prog)));

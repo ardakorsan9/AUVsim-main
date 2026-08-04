@@ -59,15 +59,18 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
         current_rates = state(10:12)';
         current_u = state(7);
         current_v = state(8);
+        current_w = state(9);
+
+        % Inertial horizontal speed for Tur4A r_ff = U_h * kappa
+        U_h = inertial_horizontal_speed(current_orientation, current_u, current_v, current_w);
 
         % Guidance tick (integrators/filters advance only here, with dt_guidance)
         if mod(idx - 1, guidance_period) == 0
             [yaw_ref, pitch_ref, u_ref, progress_index, r_ff, pitch_ref_dot] = ...
-                guidance_law(current_position, path, progress_index, current_u, current_v);
+                guidance_law(current_position, path, progress_index, current_u, current_v, U_h);
         end
 
         % Controller every plant step (dt_controller); pass heave w for Muw-FF
-        current_w = state(9);
         [delta_r, delta_e, thrust] = controller_law(yaw_ref, pitch_ref, u_ref, ...
             current_orientation(3), current_orientation(2), current_rates(3), current_rates(2), ...
             current_u, r_ff, pitch_ref_dot, current_orientation(1), current_w);
@@ -163,4 +166,20 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     suite_u_log = u_log;
     suite_w_log = w_log;
     suite_pitch_refs_log = pitch_refs;
+end
+
+function U_h = inertial_horizontal_speed(ori, u, v, w)
+% INERTIAL_HORIZONTAL_SPEED  U_h = hypot(x_dot, y_dot) from body vel via R(phi,theta,psi).
+    phi = ori(1); theta = ori(2); psi = ori(3);
+    R = [cos(psi)*cos(theta), ...
+         cos(psi)*sin(theta)*sin(phi) - sin(psi)*cos(phi), ...
+         cos(psi)*sin(theta)*cos(phi) + sin(psi)*sin(phi);
+         sin(psi)*cos(theta), ...
+         sin(psi)*sin(theta)*sin(phi) + cos(psi)*cos(phi), ...
+         sin(psi)*sin(theta)*cos(phi) - cos(psi)*sin(phi);
+         -sin(theta), ...
+         cos(theta)*sin(phi), ...
+         cos(theta)*cos(phi)];
+    pos_dot = R * [u; v; w];
+    U_h = hypot(pos_dot(1), pos_dot(2));
 end
