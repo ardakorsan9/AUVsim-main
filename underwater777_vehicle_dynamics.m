@@ -157,6 +157,15 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
         + (Mvp + m*xg)*v*p ...
         + Muuds*u^2*delta_e;
 
+    % Optional T3A diag hooks (no effect on equations when unused)
+    global diag_muw_enable diag_last_M_uw diag_last_M_elev diag_last_G_de diag_last_M_total
+    if ~isempty(diag_muw_enable) && diag_muw_enable
+        diag_last_M_uw = Muw * u * w;           % [N·m]
+        diag_last_G_de = Muuds * u * u;         % [N·m / rad]
+        diag_last_M_elev = diag_last_G_de * delta_e;
+        diag_last_M_total = M;
+    end
+
     % DEBUG: M kontrolü
     if ~isfinite(M), error('M is NaN/Inf'); end
 
