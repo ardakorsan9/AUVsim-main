@@ -103,9 +103,11 @@
     if isempty(K_zdot); K_zdot = 0; end
 
     % Tur5B: flight-path angle (gamma) feedback gain [rad/rad]
-    % Soft-best from XZ sweep (0.75): chatter OK; CTE gate still FAIL (~−5%).
+    % EXPERIMENTAL FLAG — NOT production acceptance (full suite never passed
+    % gates; XZ improve only ~5%). Soft-best from sweep was 0.75. Prefer
+    % K_gamma=0 unless an experiment explicitly sets it. Vertical audit uses 0.
     global K_gamma enable_alpha_hat
-    if isempty(K_gamma); K_gamma = 0.75; end
+    if isempty(K_gamma); K_gamma = 0.75; end  % leftover experimental default
     if isempty(enable_alpha_hat); enable_alpha_hat = false; end
 
     % Tur 3: Muw elevator feedforward (does NOT replace feedback)
