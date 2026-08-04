@@ -47,11 +47,11 @@ function init_parameters()
     % Legacy names (unused by cascaded pitch, kept for older scripts)
     Kp_theta = 5.5; Kd_theta = 12; Ki_theta = 0.35;
 
-    % Sample periods (T1A: single-rate; T1B may set dt_guidance slower)
+    % Sample periods (T1B multi-rate: fast rate loop, slow guidance + ZOH)
     % Legacy production used hard-coded dt=0.075 everywhere.
     global dt_controller dt_guidance tau_rate
-    dt_controller = 0.0375;
-    dt_guidance   = dt_controller;  % T1A single-rate
+    dt_controller = 0.025;   % rate/angle loop + plant step
+    dt_guidance   = 0.075;   % guidance tick; outputs held (ZOH) between ticks
     % Rate LPF physical time constant: preserve a=0.90 at old dt=0.075
     %   rate_filt = 0.90*prev + 0.10*raw  =>  tau = -dt/ln(0.90)
     tau_rate = -0.075 / log(0.90);  % ≈ 0.712 s
