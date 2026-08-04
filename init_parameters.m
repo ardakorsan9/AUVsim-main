@@ -1,4 +1,4 @@
-function init_parameters()
+﻿function init_parameters()
     % Define global variables
     global m W B g_m
     global xg yg zg
@@ -54,7 +54,7 @@ function init_parameters()
     dt_guidance   = 0.075;   % guidance tick; outputs held (ZOH) between ticks
     % Rate LPF physical time constant: preserve a=0.90 at old dt=0.075
     %   rate_filt = 0.90*prev + 0.10*raw  =>  tau = -dt/ln(0.90)
-    tau_rate0 = -0.075 / log(0.90);  % ≈ 0.712 s (legacy a=0.90 @ dt=0.075)
+    tau_rate0 = -0.075 / log(0.90);  % â‰ˆ 0.712 s (legacy a=0.90 @ dt=0.075)
     tau_rate = 0.05;                 % Tur12 final: tens-of-ms rate LPF (T2B-3)
 
     % Cascaded pitch: mid gains + rate damping
@@ -98,11 +98,11 @@ function init_parameters()
     pitch_ref_rate_max = deg2rad(6);
 
     % Tur 3: Muw elevator feedforward (does NOT replace feedback)
-    % δe_ff = b(u) * clamp( -λ * Muw*u*w / (Muuds*u_eff²) )
+    % Î´e_ff = b(u) * clamp( -Î» * Muw*u*w / (Muuds*u_effÂ²) )
     global lambda_muw_ff muw_ff_u_min muw_ff_u_lo muw_ff_u_hi muw_ff_clamp_deg
-    if isempty(lambda_muw_ff); lambda_muw_ff = 0.50; end  % T3B-3: λ=0.50
+    if isempty(lambda_muw_ff); lambda_muw_ff = 0.50; end  % T3B-3: Î»=0.50
     muw_ff_u_min = 0.50;          % u_eff floor [m/s]
-    muw_ff_u_lo  = 0.70;          % soft blend: b→0 below
-    muw_ff_u_hi  = 1.20;          % soft blend: b→1 above (cruise)
-    muw_ff_clamp_deg = 4.0;       % clamp |raw| to ±4 deg (within 3..5)
+    muw_ff_u_lo  = 0.70;          % soft blend: bâ†’0 below
+    muw_ff_u_hi  = 1.20;          % soft blend: bâ†’1 above (cruise)
+    muw_ff_clamp_deg = 4.0;       % clamp |raw| to Â±4 deg (within 3..5)
 end
