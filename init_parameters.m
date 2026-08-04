@@ -87,9 +87,9 @@ function init_parameters()
     % Default until test_elevator_sign / build_pitch_trim_table update them
     if isempty(elevator_sign); elevator_sign = 1; end
     if isempty(trim_speed_table)
-        % Tur 2.5.1: closed-loop refined (open-loop + fold angle-I elevator)
+        % Tur 2.5.1: closed-loop refined (2-pass fold of angle-I elevator)
         trim_speed_table = [0.8 1.0 1.5 2.0];
-        trim_elevator_table = deg2rad([-6.75 -6.50 -4.14 -2.86]);
+        trim_elevator_table = deg2rad([-9.18 -7.33 -4.62 -3.17]);
     end
 
     % Guidance pitch limits
