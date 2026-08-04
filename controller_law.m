@@ -1,7 +1,9 @@
-function [delta_r, delta_e, thrust] = controller_law(yaw_ref, pitch_ref, u_ref, psi, theta, r, q, u, r_ff, pitch_ref_dot, phi)
+function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_ref, psi, theta, r, q, u, r_ff, pitch_ref_dot, phi)
 % Cascaded pitch: angle outer loop -> rate inner loop -> elevator
 % Physical pitch: theta_phys = -theta
 % Physical pitch rate: theta_phys_dot = -q*cos(phi) + r*sin(phi)
+% Optional 4th output `dbg` (Tur 2.5): angle-I / trim components; production
+% callers using 3 outputs are unchanged.
 
     global Kp_psi Kd_psi Kp_x
     global Kp_angle Ki_angle Kp_rate Ki_rate Kaw_pitch Kd_rate Kd_damp
@@ -16,6 +18,7 @@ function [delta_r, delta_e, thrust] = controller_law(yaw_ref, pitch_ref, u_ref, 
     persistent rate_filt prev_e_rate
     global last_int_angle last_int_rate last_delta_e  % diagnostics (T2)
     global last_rate_filt last_theta_phys_dot
+    global last_de_trim last_delta_e_angle_I last_e_theta last_theta_phys
 
     if isempty(prev_delta_e); prev_delta_e = 0; end
     if isempty(prev_delta_r); prev_delta_r = 0; end
@@ -79,6 +82,9 @@ function [delta_r, delta_e, thrust] = controller_law(yaw_ref, pitch_ref, u_ref, 
     delta_e_unsat = de_trim + elevator_sign * u_el;
     delta_e_cmd = max(min(delta_e_unsat, delta_e_max), -delta_e_max);
 
+    % Steady-state angle-I elevator contribution (rate~0): sign*Kp_rate*Ki*int
+    delta_e_angle_I = elevator_sign * Kp_rate * Ki_angle * int_angle;
+
     % Back-calculation anti-windup on rate integrator
     Kaw = Kaw_pitch;
     aw_err = delta_e_cmd - delta_e_unsat;
@@ -102,9 +108,30 @@ function [delta_r, delta_e, thrust] = controller_law(yaw_ref, pitch_ref, u_ref, 
     last_delta_e = delta_e;
     last_rate_filt = rate_filt;
     last_theta_phys_dot = theta_phys_dot;
+    last_de_trim = de_trim;
+    last_delta_e_angle_I = delta_e_angle_I;
+    last_e_theta = e_theta;
+    last_theta_phys = theta_phys;
 
     thrust = thrust_trim + Kp_x * (u_ref - u);
     thrust = max(min(thrust, thrust_max), thrust_min);
+
+    if nargout >= 4
+        dbg = struct( ...
+            'e_theta', e_theta, ...
+            'theta_phys', theta_phys, ...
+            'theta_phys_dot', theta_phys_dot, ...
+            'int_angle', int_angle, ...
+            'int_angle_max', int_angle_max, ...
+            'int_rate', int_rate, ...
+            'de_trim', de_trim, ...
+            'delta_e_angle_I', delta_e_angle_I, ...
+            'delta_e_cmd', delta_e_cmd, ...
+            'delta_e_unsat', delta_e_unsat, ...
+            'rate_filt', rate_filt, ...
+            'theta_rate_cmd', theta_rate_cmd, ...
+            'mag_sat', double(abs(delta_e_unsat) > delta_e_max + 1e-9));
+    end
 end
 
 function de = lookup_elevator_trim(u)
