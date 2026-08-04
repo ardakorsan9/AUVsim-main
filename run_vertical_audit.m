@@ -70,15 +70,15 @@ end
 
 %% --------- scenarios (match run_path_suite) ---------
 function sc = make_x_line()
-    n = 400;
-    x = linspace(0, 20, n)';
+    n = 600;
+    x = linspace(0, 45, n)';
     sc = struct('name', 'X-line', 'tag', 'x_line', ...
         'path', [x, zeros(n,1), zeros(n,1)], 'T_final', 18, 'u0', 1.5);
 end
 
 function sc = make_xz_line()
-    n = 600;
-    t = linspace(0, 22, n)';
+    n = 900;
+    t = linspace(0, 42, n)';
     sc = struct('name', 'XZ-slant', 'tag', 'xz_line', ...
         'path', [t, zeros(n,1), 0.4*t], 'T_final', 22, 'u0', 1.5);
 end

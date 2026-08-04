@@ -72,8 +72,10 @@ function results = run_path_suite(do_calibrate)
             [vehicle_path, times, velocities, angular_velocities, orientations, total_time, yaw_refs, pitch_refs, u_refs] = ...
                 continuous_path_tracking(sc.path, state0, dt, sc.T_final);
 
-            metrics = compute_path_metrics(sc.path, vehicle_path, velocities, orientations, yaw_refs, pitch_refs, dt);
+            metrics = compute_path_following_metrics(sc.path, vehicle_path, velocities, ...
+                orientations, yaw_refs, pitch_refs, dt, times);
             metrics.name = sc.name;
+            metrics.tag = sc.tag;
             metrics.ok = true;
             metrics.error_msg = '';
             metrics.total_time = total_time;
@@ -129,8 +131,8 @@ function results = run_path_suite(do_calibrate)
             fig_path = fullfile(out_dir, sprintf('%02d_%s.png', k, sc.tag));
             save_suite_figure(sc, vehicle_path, times, orientations, yaw_refs, pitch_refs, metrics, fig_path);
 
-            fprintf('DONE  CTE=%.3f m | chatter=%.4f | |pitch|=%.2f | de_jit=%.3f | lag=%.3fs | corr=%.3f | fig=%s\n\n', ...
-                metrics.mean_cross_track, metrics.pitch_chatter_dps, ...
+            fprintf('DONE  CTE_perp(sbe)=%.3f m | legacy=%.3f | chatter=%.4f | |pitch|=%.2f | de_jit=%.3f | lag=%.3fs | corr=%.3f | fig=%s\n\n', ...
+                metrics.mean_cte_perp, metrics.cte_waypoint_legacy_full, metrics.pitch_chatter_dps, ...
                 metrics.mean_pitch_err_deg, metrics.elevator_jitter_deg, ...
                 metrics.rate_lag_est_s, metrics.corr_rate_filt, fig_path);
 
@@ -163,8 +165,10 @@ end
 
 %% --------- scenarios ---------
 function sc = make_scenario_x_line()
-    n = 400;
-    x = linspace(0, 20, n)';
+    % Extend path beyond T_sim travel (~1.5 m/s * 18 s ≈ 27 m) so endpoint
+    % overrun does not dominate metrics. Path end fixed near 45 m.
+    n = 600;
+    x = linspace(0, 45, n)';
     path = [x, zeros(n,1), zeros(n,1)];
     sc = struct( ...
         'name', '1) Duz X cizgisi', ...
@@ -176,9 +180,11 @@ function sc = make_scenario_x_line()
 end
 
 function sc = make_scenario_xz_line()
-    n = 600;
-    t = linspace(0, 22, n)';
-    path = [t, zeros(n,1), 0.4*t]; % mild climb (longer so CTE isn't end-point dominated)
+    % Mild climb; arc length ≈ L*sqrt(1+0.16). L=42 → s≈45 m > T_sim travel
+    % (~36 m at 22 s) so vehicle stays on-path for fair CTE_perp scoring.
+    n = 900;
+    t = linspace(0, 42, n)';
+    path = [t, zeros(n,1), 0.4*t];
     sc = struct( ...
         'name', '2) Egik XZ cizgisi', ...
         'tag', 'xz_line', ...
@@ -225,40 +231,6 @@ function state = initial_state_from_path(path, u0)
     state(7) = u0;
 end
 
-function m = compute_path_metrics(path, vehicle_path, velocities, orientations, yaw_refs, pitch_refs, dt)
-    if nargin < 7 || isempty(dt); dt = 0.0375; end
-    n = size(vehicle_path, 1);
-    if n < 2
-        m = struct('mean_cross_track', NaN, 'max_cross_track', NaN, ...
-            'final_u', NaN, 'mean_yaw_err_deg', NaN, 'mean_pitch_err_deg', NaN, ...
-            'pitch_chatter_dps', NaN, 'theta_pp_deg', NaN);
-        return;
-    end
-    ct = zeros(n, 1);
-    for i = 1:n
-        d = vecnorm(path - vehicle_path(i, :), 2, 2);
-        ct(i) = min(d);
-    end
-    % pitch_ref is physical; internal theta opposite -> err = pitch_ref + theta
-    yaw_err = wrapToPi(yaw_refs(:) - orientations(:,3));
-    pitch_err = pitch_refs(:) + orientations(:,2);
-    theta_phys = -orientations(:,2);
-    % Chatter like diag: HF std of d(theta_phys)/dt after settle (~2 s)
-    i0 = max(1, round(2.0 / dt));
-    th = theta_phys(i0:end);
-    dth = [0; diff(th)] / dt;
-    dth_hf = suite_hf_signal(detrend(dth), dt);
-    chatter = rad2deg(std(dth_hf));
-    m = struct( ...
-        'mean_cross_track', mean(ct), ...
-        'max_cross_track', max(ct), ...
-        'final_u', velocities(end,1), ...
-        'mean_yaw_err_deg', rad2deg(mean(abs(yaw_err))), ...
-        'mean_pitch_err_deg', rad2deg(mean(abs(pitch_err))), ...
-        'pitch_chatter_dps', chatter, ...
-        'theta_pp_deg', rad2deg(max(th) - min(th)));
-end
-
 function y = suite_hf_signal(x, dt)
     n = max(3, round(0.8 / dt));
     b = ones(n,1) / n;
@@ -277,7 +249,10 @@ function save_suite_figure(sc, vehicle_path, times, orientations, yaw_refs, pitc
     plot3(vehicle_path(end,1), vehicle_path(end,2), vehicle_path(end,3), 'rs', 'MarkerFaceColor', 'r', 'MarkerSize', 8);
     grid on; axis equal;
     xlabel('X (m)'); ylabel('Y (m)'); zlabel('Z (m)');
-    title(sprintf('%s\nmean CTE=%.2fm  max=%.2fm', sc.name, metrics.mean_cross_track, metrics.max_cross_track));
+    title(sprintf(['%s\nCTE_perp (settled_before_end)=%.2fm  max=%.2fm\n', ...
+        'legacy waypoint CTE=%.2fm  |ez|_sbe=%.2fm  s_tot=%.1fm'], ...
+        sc.name, metrics.mean_cte_perp, metrics.max_cte_perp, ...
+        metrics.cte_waypoint_legacy_full, metrics.mean_abs_ez, metrics.s_total));
     legend('Referans yol', 'Arac', 'Baslangic', 'Bitis', 'Location', 'best');
     view(35, 25);
 
@@ -315,8 +290,31 @@ function write_summary(results, summary_file)
         end
         fprintf(fid, '  STATUS: OK\n');
         fprintf(fid, '  samples: %d, time: %.1f s\n', r.n_samples, r.total_time);
-        fprintf(fid, '  mean cross-track error: %.3f m\n', r.mean_cross_track);
-        fprintf(fid, '  max  cross-track error: %.3f m\n', r.max_cross_track);
+        fprintf(fid, '  path s_total / travel_est: %.2f / %.2f m\n', r.s_total, r.travel_est);
+        fprintf(fid, '  PRIMARY gate window: settled_before_end (t>=%.1fs & s<0.88*s_total & ~near_end)\n', r.settle_t);
+        fprintf(fid, '  CTE_perp (settled_before_end) mean/max: %.3f / %.3f m\n', ...
+            r.mean_cte_perp, r.max_cte_perp);
+        fprintf(fid, '  |e_z| / mean signed e_z (sbe): %.3f / %+.3f m\n', ...
+            r.mean_abs_ez, r.mean_signed_ez);
+        fprintf(fid, '  |e_s| / e_xy (sbe): %.3f / %.3f m\n', r.mean_abs_es, r.mean_e_xy);
+        fprintf(fid, '  --- window table (CTE_perp / |e_z| / |e_s| / legacy_wp) ---\n');
+        fprintf(fid, '  full:                 %.3f / %.3f / %.3f / %.3f\n', ...
+            r.CTE_perp.mean, r.vertical_normal.mean, r.e_s.mean, r.cte_waypoint_legacy_full);
+        fprintf(fid, '  settled:              %.3f / %.3f / %.3f / %.3f\n', ...
+            r.CTE_perp_settled.mean, r.vertical_normal_settled.mean, ...
+            r.e_s_settled.mean, r.cte_waypoint_legacy_settled);
+        fprintf(fid, '  before_end:           %.3f / %.3f / %.3f / %.3f\n', ...
+            r.CTE_perp_before_end.mean, r.vertical_normal_before_end.mean, ...
+            r.e_s_before_end.mean, r.cte_waypoint_legacy_before_end);
+        fprintf(fid, '  settled_before_end:   %.3f / %.3f / %.3f / %.3f\n', ...
+            r.CTE_perp_settled_before_end.mean, r.vertical_normal_settled_before_end.mean, ...
+            r.e_s_settled_before_end.mean, r.cte_waypoint_legacy_settled_before_end);
+        fprintf(fid, '  overrun:              %.3f / %.3f / %.3f / %.3f\n', ...
+            r.CTE_perp_overrun.mean, r.vertical_normal_overrun.mean, ...
+            r.e_s_overrun.mean, r.cte_waypoint_legacy_overrun);
+        fprintf(fid, '  cte_waypoint_legacy (full/max): %.3f / %.3f m\n', ...
+            r.cte_waypoint_legacy_full, r.max_cte_waypoint_legacy);
+        fprintf(fid, '  mean_cross_track alias (= CTE_perp sbe): %.3f m\n', r.mean_cross_track);
         fprintf(fid, '  final surge u: %.3f m/s\n', r.final_u);
         fprintf(fid, '  mean |yaw err|: %.2f deg\n', r.mean_yaw_err_deg);
         fprintf(fid, '  mean |pitch err|: %.2f deg\n', r.mean_pitch_err_deg);
