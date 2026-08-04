@@ -75,6 +75,78 @@ function table = build_pitch_trim_table()
     global trim_speed_table trim_elevator_table
     trim_speed_table = speeds;
     trim_elevator_table = trim_de;
+
+    % Tur 2.5.1: fold closed-loop steady angle-I elevator into trim so
+    % Ki_rate=0 level flight does not need a large outer-I offset.
+    table = refine_trim_closedloop(table);
+    trim_speed_table = table.speed;
+    trim_elevator_table = table.delta_e;
+end
+
+function table = refine_trim_closedloop(table)
+% Run brief level-flight (pitch_ref=0) and absorb angle-I elevator into trim.
+    global dt_controller delta_e_max
+    fprintf('\n--- Closed-loop trim refine (Tur 2.5.1) ---\n');
+    dt = dt_controller;
+    if isempty(dt); dt = 0.025; end
+    T = 22;
+    t_settle = 10;
+    n = round(T / dt);
+    i0 = max(1, round(t_settle / dt));
+
+    for pass = 1:2
+        for is = 1:numel(table.speed)
+            u_des = table.speed(is);
+            clear controller_law
+            [de_new, th_m, de_I_m, e_m] = closedloop_trim_sample(u_des, dt, n, i0);
+            de_new = max(min(de_new, delta_e_max), -delta_e_max);
+            fprintf('  pass%d u=%.1f -> de_trim=%+5.2f deg (was %+5.2f) eθ=%+.2f° de_I=%+.2f° θ=%+.2f°\n', ...
+                pass, u_des, rad2deg(de_new), rad2deg(table.delta_e(is)), ...
+                rad2deg(e_m), rad2deg(de_I_m), rad2deg(th_m));
+            table.delta_e(is) = de_new;
+            table.theta_phys(is) = th_m;
+            table.ok(is) = abs(th_m) <= deg2rad(3);
+        end
+        global trim_speed_table trim_elevator_table
+        trim_speed_table = table.speed;
+        trim_elevator_table = table.delta_e;
+    end
+    clear controller_law
+end
+
+function [de_fold, th_m, de_I_m, e_m] = closedloop_trim_sample(u_des, dt, n, i0)
+    global trim_speed_table trim_elevator_table
+    state = zeros(12, 1);
+    state(7) = u_des;
+    yaw_ref = 0; pitch_ref = 0; u_ref = u_des;
+    de_hist = zeros(n,1); deI_hist = zeros(n,1);
+    th_hist = zeros(n,1); e_hist = zeros(n,1);
+    for k = 1:n
+        ori = state(4:6);
+        rates = state(10:12);
+        u = state(7);
+        [delta_r, delta_e, thrust, dbg] = controller_law( ...
+            yaw_ref, pitch_ref, u_ref, ori(3), ori(2), rates(3), rates(2), ...
+            u, 0, 0, ori(1));
+        controls = struct('delta_r', delta_r, 'delta_e', delta_e, 'thrust', thrust);
+        try
+            [~, g] = ode45(@(t, x) underwater777_vehicle_dynamics(t, x, controls), [0 dt], state);
+            state = g(end, :)';
+        catch
+            de_fold = interp1(trim_speed_table, trim_elevator_table, u_des, 'linear', 'extrap');
+            th_m = deg2rad(90); de_I_m = 0; e_m = deg2rad(90);
+            return;
+        end
+        de_hist(k) = dbg.de_trim;
+        deI_hist(k) = dbg.delta_e_angle_I;
+        th_hist(k) = dbg.theta_phys;
+        e_hist(k) = dbg.e_theta;
+    end
+    sl = i0:n;
+    de_fold = mean(de_hist(sl) + deI_hist(sl));
+    th_m = mean(th_hist(sl));
+    de_I_m = mean(deI_hist(sl));
+    e_m = mean(e_hist(sl));
 end
 
 function [best_de, best_th, best_err] = search_de_grid(u_des, thrust, de_grid, dt, n, n_avg)
