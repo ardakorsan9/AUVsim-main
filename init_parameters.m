@@ -60,7 +60,7 @@ function init_parameters()
     Kp_angle = 1.25;   % [1/s]  e_theta -> rate cmd
     Ki_angle = 0.16;
     Kp_rate  = 0.95;   % [s]    e_rate -> elevator
-    Ki_rate  = 0.30;
+    Ki_rate  = 0.0;   % T2A: disable pitch rate integrator
     Kaw_pitch = 1.2;
     Kd_rate = 0.0;     % e_rate derivative off
     Kd_damp = 0.80;    % physical-rate damping on elevator [s]

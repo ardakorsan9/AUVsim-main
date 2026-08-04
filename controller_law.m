@@ -14,6 +14,7 @@ function [delta_r, delta_e, thrust] = controller_law(yaw_ref, pitch_ref, u_ref, 
     persistent prev_delta_e prev_delta_r
     persistent int_angle int_rate
     persistent rate_filt prev_e_rate
+    global last_int_angle last_int_rate last_delta_e  % diagnostics (T2)
 
     if isempty(prev_delta_e); prev_delta_e = 0; end
     if isempty(prev_delta_r); prev_delta_r = 0; end
@@ -89,10 +90,15 @@ function [delta_r, delta_e, thrust] = controller_law(yaw_ref, pitch_ref, u_ref, 
     end
 
     max_dr = deg2rad(40) * dt;
-    max_de = deg2rad(40) * dt;    delta_r = prev_delta_r + max(min(delta_r_cmd - prev_delta_r, max_dr), -max_dr);
+    max_de = deg2rad(40) * dt;
+    delta_r = prev_delta_r + max(min(delta_r_cmd - prev_delta_r, max_dr), -max_dr);
     delta_e = prev_delta_e + max(min(delta_e_cmd - prev_delta_e, max_de), -max_de);
     prev_delta_r = delta_r;
     prev_delta_e = delta_e;
+
+    last_int_angle = int_angle;
+    last_int_rate = int_rate;
+    last_delta_e = delta_e;
 
     thrust = thrust_trim + Kp_x * (u_ref - u);
     thrust = max(min(thrust, thrust_max), thrust_min);
