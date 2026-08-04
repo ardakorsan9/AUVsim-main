@@ -1,24 +1,34 @@
-function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] = guidance_law(current_position, path, progress_index, u_body, v_body, U_h, zdot_inertial)
+function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] = guidance_law(current_position, path, progress_index, u_body, v_body, U_h, zdot_inertial, theta_phys)
 % Path following guidance + beta compensation + limited pitch_ref.
 % pitch_ref_dot: physical pitch reference rate [rad/s]
 % U_h (optional): inertial horizontal speed hypot(x_dot,y_dot). If omitted,
 %   fallback U_h = hypot(u_body,v_body). Tur4A: r_ff = U_h * kappa (no 1.15*u_ref).
 % zdot_inertial (optional): inertial vertical velocity (R*[u;v;w])_z. Tur5A:
 %   pitch_ref += K_zdot * (zdot_path - zdot_inertial), same sign family as depth-P.
+% theta_phys (optional): physical pitch (-theta). Tur5B: gamma FB / alpha_hat.
+% Tur5B: e_gamma = gamma_path - gamma_actual;
+%   pitch_ref = theta_path + K_gamma*e_gamma + Kz*e_z + depth-I [+ optional K_zdot]
+%   optional: theta_ref = gamma_cmd + alpha_hat, alpha_hat = LPF(theta_phys-gamma)
 
     global lookahead_distance desired_speed
     global pitch_ref_max pitch_ref_rate_max
     global dt_guidance dt_controller
     global last_guidance_U_h last_guidance_kappa last_r_ff
-    global K_zdot
+    global K_zdot K_gamma enable_alpha_hat
+    global last_gamma_actual last_gamma_path last_alpha_eff last_e_gamma
+    global last_e_z last_e_zdot last_zdot_inertial last_alpha_hat
 
-    persistent s_prog yaw_cont pitch_f z_e_f z_e_i zd_e_f kappa_f chi_f yaw_out pitch_out initialized
+    persistent s_prog yaw_cont pitch_f z_e_f z_e_i zd_e_f eg_f alpha_hat kappa_f chi_f yaw_out pitch_out initialized
     if isempty(initialized); initialized = false; end
     if isempty(z_e_i); z_e_i = 0; end
     if isempty(zd_e_f); zd_e_f = 0; end
+    if isempty(eg_f); eg_f = 0; end
+    if isempty(alpha_hat); alpha_hat = 0; end
     if isempty(pitch_ref_max); pitch_ref_max = deg2rad(25); end
     if isempty(pitch_ref_rate_max); pitch_ref_rate_max = deg2rad(5); end
     if isempty(K_zdot); K_zdot = 0; end
+    if isempty(K_gamma); K_gamma = 0; end
+    if isempty(enable_alpha_hat); enable_alpha_hat = false; end
     if isempty(dt_guidance)
         if isempty(dt_controller); dt_controller = 0.0375; end
         dt_guidance = dt_controller;
@@ -35,6 +45,9 @@ function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] =
     end
     if nargin < 7 || isempty(zdot_inertial)
         zdot_inertial = 0; % no D term without inertial zdot
+    end
+    if nargin < 8 || isempty(theta_phys)
+        theta_phys = 0;
     end
     U_h = max(U_h, 0);
 
@@ -60,6 +73,8 @@ function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] =
         z_e_f = 0;
         z_e_i = 0;
         zd_e_f = 0;
+        eg_f = 0;
+        alpha_hat = 0;
         kappa_f = 0;
         chi_f = nan;
         initialized = true;
@@ -187,8 +202,40 @@ function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] =
     zd_e_f = 0.85 * zd_e_f + 0.15 * zd_e_raw;
     pitch_corr = -0.050 * z_e_f - 0.006 * z_e_i - K_zdot * zd_e_f;
     pitch_corr = max(min(pitch_corr, deg2rad(9)), deg2rad(-9));
-    pitch_raw = pitch_geom + pitch_corr;
+
+    % Tur5B: path-angle (flight-path) gamma feedback
+    % gamma_actual = atan2(zdot, Uh); gamma_path = atan2(zdot_path, U_path_h)
+    U_h_safe = max(U_h, 0.05);
+    U_path_h = max(U_along * hypot(t_hat(1), t_hat(2)), 0.05);
+    gamma_actual = atan2(zdot_inertial, U_h_safe);
+    gamma_path = atan2(zdot_path, U_path_h);
+    e_gamma_raw = wrapToPi(gamma_path - gamma_actual);
+    eg_f = 0.85 * eg_f + 0.15 * e_gamma_raw;
+    alpha_eff = theta_phys - gamma_actual;
+    e_z_log = -z_e_f;                 % z_path - z (filtered)
+    e_zdot_log = -zd_e_raw;           % zdot_path - zdot
+
+    gamma_cmd = pitch_geom + K_gamma * eg_f + pitch_corr;
+    if enable_alpha_hat && u_body >= 0.50
+        % Slow AoA estimate; limited; off at low surge
+        % theta_ref = gamma_cmd_path + alpha_hat  (gamma base = path angle)
+        alpha_hat = 0.98 * alpha_hat + 0.02 * alpha_eff;
+        alpha_hat = max(min(alpha_hat, deg2rad(8)), deg2rad(-8));
+        pitch_raw = gamma_path + K_gamma * eg_f + pitch_corr + alpha_hat;
+    else
+        alpha_hat = 0.98 * alpha_hat; % bleed off when disabled / low-u
+        pitch_raw = gamma_cmd;        % theta_path + K_gamma*e_gamma + depth[+zdot]
+    end
     pitch_raw = max(min(pitch_raw, pitch_ref_max), -pitch_ref_max);
+
+    last_gamma_actual = gamma_actual;
+    last_gamma_path = gamma_path;
+    last_alpha_eff = alpha_eff;
+    last_e_gamma = eg_f;
+    last_e_z = e_z_log;
+    last_e_zdot = e_zdot_log;
+    last_zdot_inertial = zdot_inertial;
+    last_alpha_hat = alpha_hat;
     if isnan(pitch_f)
         pitch_f = pitch_raw; % cold start = path slope (avoids 0→22° dive)
         pitch_out = pitch_raw;

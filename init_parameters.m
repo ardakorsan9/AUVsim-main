@@ -97,10 +97,16 @@
     pitch_ref_max = deg2rad(26);
     pitch_ref_rate_max = deg2rad(6);
 
-    % Tur5A: inertial zdot error gain on pitch_ref [rad / (m/s)]
-    % Selected from XZ sweep (0.50): best CTE with chatter < 0.12; CTE gate still FAIL.
+    % Tur5A/Tur5B: inertial zdot error gain on pitch_ref [rad / (m/s)]
+    % Tur5B A/B: DROP — no clear benefit vs gamma-only (B chatter > 0.12).
     global K_zdot
-    if isempty(K_zdot); K_zdot = 0.50; end
+    if isempty(K_zdot); K_zdot = 0; end
+
+    % Tur5B: flight-path angle (gamma) feedback gain [rad/rad]
+    % Soft-best from XZ sweep (0.75): chatter OK; CTE gate still FAIL (~−5%).
+    global K_gamma enable_alpha_hat
+    if isempty(K_gamma); K_gamma = 0.75; end
+    if isempty(enable_alpha_hat); enable_alpha_hat = false; end
 
     % Tur 3: Muw elevator feedforward (does NOT replace feedback)
     % de_ff = b(u) * clamp( -lambda * Muw*u*w / (Muuds*u_eff^2) )
