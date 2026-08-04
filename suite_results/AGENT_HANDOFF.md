@@ -1,45 +1,38 @@
 # AGENT_HANDOFF — AUV path following
 
-**Updated:** 2026-08-04 20:25  
-**Owner now:** Cursor (implement done — plant table)  
-**Paused / later:** yaw smoothness, R=5 speed, roll, LQI/SMC/NMPC, autonomy/AI
+**Updated:** 2026-08-05 01:30
+**Owner now:** Cursor (pitch closure + yaw start done)
+**Paused / later:** R=5 speed, roll, LQI/SMC/NMPC, autonomy/AI
 
 ## Production freeze (do not thrash)
 - `dt_c=0.025`, `dt_g=0.075`, `tau_rate=0.05`, `Ki_rate=0`, `Ki_angle=0.16`
-- `lambda_muw_ff=0.25`, Tur4A `r_ff=U_h*κ`, T25 trim
-- Production guidance: `K_gamma=0`, `K_zdot=0` (T5 experimental only)
-- Pitch accepted as “good enough for now” — do not retune pitch gains
+- `lambda_muw_ff=0.25` base, Tur4A `r_ff=U_h*κ`, T25 trim
+- Production guidance: `K_gamma=0`, `K_zdot=0`
+- **Pitch gains FROZEN** — do not retune; XZ steady `|eθ|≈0.39°` in gate
 
 ## DONE (skip)
-- Tur1–2 timing / Ki_rate / filter
-- Tur2.5 trim bias
-- Tur3 Muw FF λ=0.25
-- Tur4A U_h κ (R=5 = rudder limit; no 4B)
-- Tur5A/B on inflated CTE (invalid gates)
-- True metrics: `CTE_perp`, settled_before_end, path extend
-- Rescore: XZ CTE_perp baseline ~0.75, T5A/B ~0.55 (mid target missed)
+- Tur1–5 / metric rescore / elevator pulse plant table
+- Pitch closure acq/steady + λ A/B → `PITCH_CLOSURE.md`
+- Yaw start R=7.5/10 → `YAW_START.md` (|eψ| already ~0.2–0.3°)
 
-## DONE (this handoff)
-- **Lean elevator pulse / NMP audit** → `suite_results/PLANT_VERTICAL_TABLE.md`
-  - u=1.5/2.0: no inverse/NMP; order `δe→M_e→q→w→θ→ż→z`; delay ≤0.025 s; Muw λ=0.25 **neutral**
-  - u=0.8: **constraint/envelope** (δe near limit)
-  - Verdict: **keep cascaded**; envelope before LQI; do not start LQI/yaw/roll yet
+## Pitch snapshot
+- X `|eθ|≈0.06°` | XZ steady λ=0.25: **0.388°** | λ=0: **0.332°**
+- λ=0 better on climb CTE/elev effort → **NEXT scheduled λ** (level 0.25 / climb 0); not implemented
+- Historical 1.44° suite pitch = acquisition; steady OK
+
+## Yaw snapshot (R=7.5 / 10)
+- R=7.5: `|eψ|=0.31°` r/(Uhκ)=1.030 sat=0% CTE_perp=**1.315** (radial open)
+- R=10: `|eψ|=0.16°` r/(Uhκ)=1.018 sat=0% CTE_perp=0.284
+- Suite ~35° was **R=5**, not unwrap on feasible circles
 
 ## NOW
-1. Act on plant table if needed (mild envelope / FF schedule only — not pitch gain thrash)
-2. Otherwise resume deferred horizontal work when owner switches
+1. R=7.5 radial / `CTE_perp` (not yaw gains)
+2. Helix true-metric check
+3. R=5 speed scheduler only after R=7.5 radial clean
+4. Optional: tiny climb λ schedule (<30 lines)
 
-## SKIP for now (user OK)
-- Full 32-condition matrix
-- Controllability Gramian / full A,B ID (unless pulse inconclusive)
-- Yaw ref smoothness, R=5 speed scheduler, roll, depth channel, LQI/SMC/NMPC, AI autonomy
-
-## Later roadmap
-1. Envelope / mild guidance if required by plant table
-2. Yaw smoothness
-3. R=5 curvature-aware speed if required
-4. Roll / speed / depth channels
-5. Autonomy / AI later
+## SKIP
+- Full 32 matrix, LQI/A,B ID, pitch gain sweep, Ki_rate reopen
 
 ## Paths
 - Project: `C:\Users\ardak\MATLAB\Projects\AUVsim-main`
