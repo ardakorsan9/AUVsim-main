@@ -98,11 +98,11 @@
     pitch_ref_rate_max = deg2rad(6);
 
     % Tur 3: Muw elevator feedforward (does NOT replace feedback)
-    % Î´e_ff = b(u) * clamp( -Î» * Muw*u*w / (Muuds*u_effÂ²) )
+    % de_ff = b(u) * clamp( -lambda * Muw*u*w / (Muuds*u_eff^2) )
     global lambda_muw_ff muw_ff_u_min muw_ff_u_lo muw_ff_u_hi muw_ff_clamp_deg
-    if isempty(lambda_muw_ff); lambda_muw_ff = 0.50; end  % T3B-3: Î»=0.50
+    if isempty(lambda_muw_ff); lambda_muw_ff = 0.25; end  % T3C: best lambda
     muw_ff_u_min = 0.50;          % u_eff floor [m/s]
-    muw_ff_u_lo  = 0.70;          % soft blend: bâ†’0 below
-    muw_ff_u_hi  = 1.20;          % soft blend: bâ†’1 above (cruise)
-    muw_ff_clamp_deg = 4.0;       % clamp |raw| to Â±4 deg (within 3..5)
+    muw_ff_u_lo  = 0.70;          % soft blend: b->0 below
+    muw_ff_u_hi  = 1.20;          % soft blend: b->1 above (cruise)
+    muw_ff_clamp_deg = 4.0;       % clamp |raw| to +/-4 deg (within 3..5)
 end
