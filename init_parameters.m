@@ -100,7 +100,7 @@ function init_parameters()
     % Tur 3: Muw elevator feedforward (does NOT replace feedback)
     % δe_ff = b(u) * clamp( -λ * Muw*u*w / (Muuds*u_eff²) )
     global lambda_muw_ff muw_ff_u_min muw_ff_u_lo muw_ff_u_hi muw_ff_clamp_deg
-    if isempty(lambda_muw_ff); lambda_muw_ff = 0.25; end  % T3B-2: λ=0.25
+    if isempty(lambda_muw_ff); lambda_muw_ff = 0.50; end  % T3B-3: λ=0.50
     muw_ff_u_min = 0.50;          % u_eff floor [m/s]
     muw_ff_u_lo  = 0.70;          % soft blend: b→0 below
     muw_ff_u_hi  = 1.20;          % soft blend: b→1 above (cruise)
