@@ -30,6 +30,8 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     global last_rate_filt last_theta_phys_dot
     global last_de_uw_ff last_de_fb last_de_trim
     global last_M_uw last_M_elev last_M_e_ff last_G_de last_e_theta last_theta_phys
+    global last_gamma_actual last_gamma_path last_alpha_eff last_e_gamma
+    global last_e_z last_e_zdot last_zdot_inertial last_alpha_hat
     delta_e_log = zeros(n_steps, 1);
     int_angle_log = zeros(n_steps, 1);
     int_rate_log = zeros(n_steps, 1);
@@ -46,6 +48,13 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     theta_phys_log = zeros(n_steps, 1);
     u_log = zeros(n_steps, 1);
     w_log = zeros(n_steps, 1);
+    gamma_actual_log = zeros(n_steps, 1);
+    gamma_path_log = zeros(n_steps, 1);
+    alpha_eff_log = zeros(n_steps, 1);
+    e_gamma_log = zeros(n_steps, 1);
+    e_z_log = zeros(n_steps, 1);
+    e_zdot_log = zeros(n_steps, 1);
+    zdot_inertial_log = zeros(n_steps, 1);
     total_time = 0;
     progress_index = 1;
 
@@ -63,11 +72,13 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
 
         % Inertial velocity for Tur4A (U_h) and Tur5A (zdot)
         [U_h, zdot_inertial] = inertial_velocity_ned(current_orientation, current_u, current_v, current_w);
+        theta_phys_now = -current_orientation(2);
 
         % Guidance tick (integrators/filters advance only here, with dt_guidance)
         if mod(idx - 1, guidance_period) == 0
             [yaw_ref, pitch_ref, u_ref, progress_index, r_ff, pitch_ref_dot] = ...
-                guidance_law(current_position, path, progress_index, current_u, current_v, U_h, zdot_inertial);
+                guidance_law(current_position, path, progress_index, current_u, current_v, ...
+                U_h, zdot_inertial, theta_phys_now);
         end
 
         % Controller every plant step (dt_controller); pass heave w for Muw-FF
@@ -118,6 +129,13 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
         if isempty(last_G_de); last_G_de = 0; end
         if isempty(last_e_theta); last_e_theta = 0; end
         if isempty(last_theta_phys); last_theta_phys = 0; end
+        if isempty(last_gamma_actual); last_gamma_actual = 0; end
+        if isempty(last_gamma_path); last_gamma_path = 0; end
+        if isempty(last_alpha_eff); last_alpha_eff = 0; end
+        if isempty(last_e_gamma); last_e_gamma = 0; end
+        if isempty(last_e_z); last_e_z = 0; end
+        if isempty(last_e_zdot); last_e_zdot = 0; end
+        if isempty(last_zdot_inertial); last_zdot_inertial = 0; end
         delta_e_log(idx) = last_delta_e;
         int_angle_log(idx) = last_int_angle;
         int_rate_log(idx) = last_int_rate;
@@ -134,6 +152,13 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
         theta_phys_log(idx) = last_theta_phys;
         u_log(idx) = current_u;
         w_log(idx) = current_w;
+        gamma_actual_log(idx) = last_gamma_actual;
+        gamma_path_log(idx) = last_gamma_path;
+        alpha_eff_log(idx) = last_alpha_eff;
+        e_gamma_log(idx) = last_e_gamma;
+        e_z_log(idx) = last_e_z;
+        e_zdot_log(idx) = last_e_zdot;
+        zdot_inertial_log(idx) = last_zdot_inertial;
         total_time = total_time + dt;
         times(idx) = total_time;
 
@@ -149,6 +174,8 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     global suite_de_uw_ff_log suite_de_fb_log suite_de_trim_log
     global suite_M_uw_log suite_M_elev_log suite_M_e_ff_log suite_G_de_log
     global suite_e_theta_log suite_theta_phys_log suite_u_log suite_w_log suite_pitch_refs_log
+    global suite_gamma_actual_log suite_gamma_path_log suite_alpha_eff_log suite_e_gamma_log
+    global suite_e_z_log suite_e_zdot_log suite_zdot_inertial_log
     suite_delta_e_log = delta_e_log;
     suite_int_angle_log = int_angle_log;
     suite_int_rate_log = int_rate_log;
@@ -166,6 +193,13 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     suite_u_log = u_log;
     suite_w_log = w_log;
     suite_pitch_refs_log = pitch_refs;
+    suite_gamma_actual_log = gamma_actual_log;
+    suite_gamma_path_log = gamma_path_log;
+    suite_alpha_eff_log = alpha_eff_log;
+    suite_e_gamma_log = e_gamma_log;
+    suite_e_z_log = e_z_log;
+    suite_e_zdot_log = e_zdot_log;
+    suite_zdot_inertial_log = zdot_inertial_log;
 end
 
 function [U_h, zdot] = inertial_velocity_ned(ori, u, v, w)
