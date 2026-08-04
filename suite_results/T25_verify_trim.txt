@@ -1,0 +1,7 @@
+trim de_deg=[-9.175 -7.326 -4.623 -3.171]
+Ki_angle=0.160
+PURE u=1.5 | e=-0.194 | |e|=0.194 | chatter=0.0093 | sat=0.0% | Ipeg=0.00
+PURE u=2.0 | e=-0.133 | |e|=0.133 | chatter=0.0071 | sat=0.0% | Ipeg=0.00
+XLINE_diag | e=-0.553 | |e|=0.553 | chatter=0.0771 | CTE=3.049
+SUITE_XLINE | mean|pitch|=0.57 | chatter=0.0788 | CTE=2.063 (Tur12=2.020, +2.1%)
+ACCEPT: pure PASS, xline PASS, skip 2.5.2/2.5.3

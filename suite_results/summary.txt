@@ -4,20 +4,20 @@ AUV Path Suite Summary
 1) Duz X cizgisi
   STATUS: OK
   samples: 720, time: 18.0 s
-  mean cross-track error: 2.020 m
-  max  cross-track error: 10.215 m
-  final surge u: 1.446 m/s
+  mean cross-track error: 2.063 m
+  max  cross-track error: 10.229 m
+  final surge u: 1.444 m/s
   mean |yaw err|: 0.00 deg
-  mean |pitch err|: 1.45 deg
-  pitch chatter: 0.1126 deg/s
-  theta pp (settle): 2.159 deg
-  elevator RMS: 5.596 deg
-  elevator std: 1.348 deg
-  elevator jitter (HF RMS): 0.352 deg
-  int_angle min/max: -0.4541 / 0.0001 rad
-  int_rate  min/max: -1.2532 / 0.0005 rad
+  mean |pitch err|: 0.57 deg
+  pitch chatter: 0.0788 deg/s
+  theta pp (settle): 1.800 deg
+  elevator RMS: 5.608 deg
+  elevator std: 1.186 deg
+  elevator jitter (HF RMS): 0.263 deg
+  int_angle min/max: -0.1637 / 0.0068 rad
+  int_rate  min/max: -0.4187 / 0.0131 rad
   tau_rate: 0.0500 s
-  rate filt RMS err: 0.014 deg/s
+  rate filt RMS err: 0.009 deg/s
   corr(rate,filt): 0.999
   rate lag est: 0.000 s
   dt: 0.0250 s
@@ -25,20 +25,20 @@ AUV Path Suite Summary
 2) Egik XZ cizgisi
   STATUS: OK
   samples: 880, time: 22.0 s
-  mean cross-track error: 2.565 m
-  max  cross-track error: 12.027 m
-  final surge u: 1.406 m/s
+  mean cross-track error: 2.671 m
+  max  cross-track error: 12.037 m
+  final surge u: 1.405 m/s
   mean |yaw err|: 0.00 deg
-  mean |pitch err|: 0.55 deg
-  pitch chatter: 0.0801 deg/s
-  theta pp (settle): 9.419 deg
-  elevator RMS: 1.848 deg
-  elevator std: 1.150 deg
-  elevator jitter (HF RMS): 0.403 deg
-  int_angle min/max: -0.0893 / 0.0559 rad
-  int_rate  min/max: -0.0243 / 0.1367 rad
+  mean |pitch err|: 0.94 deg
+  pitch chatter: 0.0635 deg/s
+  theta pp (settle): 9.489 deg
+  elevator RMS: 1.859 deg
+  elevator std: 1.107 deg
+  elevator jitter (HF RMS): 0.349 deg
+  int_angle min/max: 0.0000 / 0.3033 rad
+  int_rate  min/max: 0.0000 / 1.0545 rad
   tau_rate: 0.0500 s
-  rate filt RMS err: 0.011 deg/s
+  rate filt RMS err: 0.010 deg/s
   corr(rate,filt): 1.000
   rate lag est: 0.000 s
   dt: 0.0250 s
@@ -46,20 +46,20 @@ AUV Path Suite Summary
 3) Yatay daire
   STATUS: OK
   samples: 1400, time: 35.0 s
-  mean cross-track error: 1.518 m
-  max  cross-track error: 3.122 m
-  final surge u: 1.400 m/s
-  mean |yaw err|: 35.35 deg
-  mean |pitch err|: 1.01 deg
-  pitch chatter: 0.0621 deg/s
-  theta pp (settle): 2.427 deg
-  elevator RMS: 7.095 deg
-  elevator std: 0.869 deg
-  elevator jitter (HF RMS): 0.249 deg
-  int_angle min/max: -0.6127 / 0.0001 rad
-  int_rate  min/max: -3.2918 / 0.0006 rad
+  mean cross-track error: 1.512 m
+  max  cross-track error: 3.153 m
+  final surge u: 1.398 m/s
+  mean |yaw err|: 35.29 deg
+  mean |pitch err|: 0.40 deg
+  pitch chatter: 0.0405 deg/s
+  theta pp (settle): 2.489 deg
+  elevator RMS: 7.016 deg
+  elevator std: 0.756 deg
+  elevator jitter (HF RMS): 0.185 deg
+  int_angle min/max: -0.2239 / 0.0071 rad
+  int_rate  min/max: -1.1948 / 0.0133 rad
   tau_rate: 0.0500 s
-  rate filt RMS err: 0.008 deg/s
+  rate filt RMS err: 0.005 deg/s
   corr(rate,filt): 1.000
   rate lag est: 0.000 s
   dt: 0.0250 s
@@ -67,20 +67,20 @@ AUV Path Suite Summary
 4) Heliks
   STATUS: OK
   samples: 1800, time: 45.0 s
-  mean cross-track error: 1.682 m
-  max  cross-track error: 2.997 m
-  final surge u: 1.387 m/s
-  mean |yaw err|: 37.38 deg
-  mean |pitch err|: 0.73 deg
-  pitch chatter: 0.0475 deg/s
-  theta pp (settle): 2.668 deg
-  elevator RMS: 6.314 deg
-  elevator std: 0.831 deg
-  elevator jitter (HF RMS): 0.218 deg
-  int_angle min/max: -0.5336 / 0.0015 rad
-  int_rate  min/max: -3.5797 / 0.0044 rad
+  mean cross-track error: 1.667 m
+  max  cross-track error: 3.046 m
+  final surge u: 1.388 m/s
+  mean |yaw err|: 37.32 deg
+  mean |pitch err|: 0.26 deg
+  pitch chatter: 0.0344 deg/s
+  theta pp (settle): 2.684 deg
+  elevator RMS: 6.236 deg
+  elevator std: 0.725 deg
+  elevator jitter (HF RMS): 0.162 deg
+  int_angle min/max: -0.1418 / 0.0195 rad
+  int_rate  min/max: -0.8589 / 0.0314 rad
   tau_rate: 0.0500 s
-  rate filt RMS err: 0.006 deg/s
+  rate filt RMS err: 0.005 deg/s
   corr(rate,filt): 1.000
   rate lag est: 0.000 s
   dt: 0.0250 s
