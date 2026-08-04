@@ -1,0 +1,25 @@
+delta_e =  +3.0 deg -> theta_phys  +9.65 -> +83.95 (d=+74.30 deg), u=2.13 | Muuds=-6.15
+delta_e =  -3.0 deg -> theta_phys  +9.65 ->  -6.95 (d=-16.59 deg), u=2.51 | Muuds=-6.15
+SIGN OK: +delta_e increases theta_phys. controller_sign = +1
+
+=== PITCH TRIM TABLE (theta_phys -> 0) ===
+u=0.8 -> de_trim=-2.75 deg (theta_phys=+0.99 deg)
+u=1.0 -> de_trim=-2.50 deg (theta_phys=-1.22 deg)
+u=1.5 -> de_trim=-1.75 deg (theta_phys=-1.47 deg)
+u=2.0 -> de_trim=-1.25 deg (theta_phys=+0.48 deg)
+
+--- Closed-loop trim refine (Tur 2.5.1) ---
+  pass1 u=0.8 -> de_trim=-8.47 deg (was -2.75) eθ=-1.24° de_I=-6.32° θ=+1.24°
+  pass1 u=1.0 -> de_trim=-6.81 deg (was -2.50) eθ=-0.91° de_I=-4.92° θ=+0.91°
+  pass1 u=1.5 -> de_trim=-4.31 deg (was -1.75) eθ=-0.49° de_I=-2.88° θ=+0.49°
+  pass1 u=2.0 -> de_trim=-2.98 deg (was -1.25) eθ=-0.32° de_I=-1.94° θ=+0.32°
+  pass2 u=0.8 -> de_trim=-9.18 deg (was -8.47) eθ=-0.72° de_I=-3.54° θ=+0.72°
+  pass2 u=1.0 -> de_trim=-7.33 deg (was -6.81) eθ=-0.51° de_I=-2.55° θ=+0.51°
+  pass2 u=1.5 -> de_trim=-4.62 deg (was -4.31) eθ=-0.23° de_I=-1.17° θ=+0.23°
+  pass2 u=2.0 -> de_trim=-3.17 deg (was -2.98) eθ=-0.15° de_I=-0.77° θ=+0.15°
+Trim after refine: u=[0.8 1.0 1.5 2.0] de=[-9.18 -7.33 -4.62 -3.17]
+PURE u=1.5 run1 | e=-0.194 | |e|=0.194 | chatter=0.0093 | sat=0.0% | Ipeg=0.00 | deRMS=4.846 | de_I=-0.967
+PURE u=1.5 run2 | e=-0.194 | |e|=0.194 | chatter=0.0093 | sat=0.0% | Ipeg=0.00 | deRMS=4.846 | de_I=-0.967
+PURE u=2.0 run1 | e=-0.133 | |e|=0.133 | chatter=0.0071 | sat=0.0% | Ipeg=0.00 | deRMS=3.317 | de_I=-0.650
+PURE u=2.0 run2 | e=-0.133 | |e|=0.133 | chatter=0.0071 | sat=0.0% | Ipeg=0.00 | deRMS=3.317 | de_I=-0.650
+XLINE | e=-0.553 | |e|=0.553 | chatter=0.0771 | CTE=3.049 | depth_e=-0.175
