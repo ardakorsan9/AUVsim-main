@@ -55,7 +55,7 @@ function init_parameters()
     % Rate LPF physical time constant: preserve a=0.90 at old dt=0.075
     %   rate_filt = 0.90*prev + 0.10*raw  =>  tau = -dt/ln(0.90)
     tau_rate0 = -0.075 / log(0.90);  % ≈ 0.712 s (legacy a=0.90 @ dt=0.075)
-    tau_rate = tau_rate0 / 4;        % T2B-2: tau/4
+    tau_rate = 0.05;                 % T2B-3: tens-of-ms lag region
 
     % Cascaded pitch: mid gains + rate damping
     Kp_angle = 1.25;   % [1/s]  e_theta -> rate cmd
