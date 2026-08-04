@@ -4,42 +4,42 @@ AUV Path Suite Summary
 1) Duz X cizgisi
   STATUS: OK
   samples: 720, time: 18.0 s
-  mean cross-track error: 2.017 m
+  mean cross-track error: 2.018 m
   max  cross-track error: 10.215 m
   final surge u: 1.446 m/s
   mean |yaw err|: 0.00 deg
-  mean |pitch err|: 1.44 deg
-  pitch chatter: 0.1087 deg/s
-  theta pp (settle): 1.905 deg
-  elevator RMS: 5.599 deg
-  elevator std: 1.390 deg
-  elevator jitter (HF RMS): 0.469 deg
-  int_angle min/max: -0.4523 / 0.0001 rad
-  int_rate  min/max: -1.2504 / 0.0004 rad
-  tau_rate: 0.3559 s
-  rate filt RMS err: 0.134 deg/s
-  corr(rate,filt): 0.894
-  rate lag est: 0.075 s
+  mean |pitch err|: 1.45 deg
+  pitch chatter: 0.1075 deg/s
+  theta pp (settle): 2.047 deg
+  elevator RMS: 5.597 deg
+  elevator std: 1.362 deg
+  elevator jitter (HF RMS): 0.401 deg
+  int_angle min/max: -0.4533 / 0.0001 rad
+  int_rate  min/max: -1.2521 / 0.0005 rad
+  tau_rate: 0.1780 s
+  rate filt RMS err: 0.060 deg/s
+  corr(rate,filt): 0.984
+  rate lag est: 0.000 s
   dt: 0.0250 s
 
 2) Egik XZ cizgisi
   STATUS: OK
   samples: 880, time: 22.0 s
   mean cross-track error: 2.564 m
-  max  cross-track error: 12.029 m
+  max  cross-track error: 12.028 m
   final surge u: 1.406 m/s
   mean |yaw err|: 0.00 deg
-  mean |pitch err|: 0.51 deg
-  pitch chatter: 0.0927 deg/s
-  theta pp (settle): 9.338 deg
-  elevator RMS: 1.949 deg
-  elevator std: 1.303 deg
-  elevator jitter (HF RMS): 0.651 deg
-  int_angle min/max: -0.0809 / 0.0490 rad
-  int_rate  min/max: -0.0182 / 0.1372 rad
-  tau_rate: 0.3559 s
-  rate filt RMS err: 0.114 deg/s
-  corr(rate,filt): 0.992
+  mean |pitch err|: 0.53 deg
+  pitch chatter: 0.0823 deg/s
+  theta pp (settle): 9.375 deg
+  elevator RMS: 1.888 deg
+  elevator std: 1.210 deg
+  elevator jitter (HF RMS): 0.504 deg
+  int_angle min/max: -0.0858 / 0.0523 rad
+  int_rate  min/max: -0.0227 / 0.1358 rad
+  tau_rate: 0.1780 s
+  rate filt RMS err: 0.045 deg/s
+  corr(rate,filt): 0.999
   rate lag est: 0.000 s
   dt: 0.0250 s
 
@@ -47,40 +47,40 @@ AUV Path Suite Summary
   STATUS: OK
   samples: 1400, time: 35.0 s
   mean cross-track error: 1.518 m
-  max  cross-track error: 3.124 m
+  max  cross-track error: 3.123 m
   final surge u: 1.400 m/s
   mean |yaw err|: 35.35 deg
   mean |pitch err|: 1.01 deg
-  pitch chatter: 0.0467 deg/s
-  theta pp (settle): 2.096 deg
-  elevator RMS: 7.096 deg
-  elevator std: 0.909 deg
-  elevator jitter (HF RMS): 0.333 deg
-  int_angle min/max: -0.6131 / 0.0002 rad
-  int_rate  min/max: -3.2899 / 0.0005 rad
-  tau_rate: 0.3559 s
-  rate filt RMS err: 0.069 deg/s
-  corr(rate,filt): 0.945
+  pitch chatter: 0.0584 deg/s
+  theta pp (settle): 2.282 deg
+  elevator RMS: 7.095 deg
+  elevator std: 0.883 deg
+  elevator jitter (HF RMS): 0.289 deg
+  int_angle min/max: -0.6128 / 0.0002 rad
+  int_rate  min/max: -3.2910 / 0.0006 rad
+  tau_rate: 0.1780 s
+  rate filt RMS err: 0.032 deg/s
+  corr(rate,filt): 0.991
   rate lag est: 0.000 s
   dt: 0.0250 s
 
 4) Heliks
   STATUS: OK
   samples: 1800, time: 45.0 s
-  mean cross-track error: 1.682 m
-  max  cross-track error: 3.000 m
+  mean cross-track error: 1.681 m
+  max  cross-track error: 2.999 m
   final surge u: 1.387 m/s
-  mean |yaw err|: 37.40 deg
+  mean |yaw err|: 37.38 deg
   mean |pitch err|: 0.73 deg
-  pitch chatter: 0.0406 deg/s
-  theta pp (settle): 2.654 deg
-  elevator RMS: 6.318 deg
-  elevator std: 0.868 deg
-  elevator jitter (HF RMS): 0.301 deg
-  int_angle min/max: -0.5346 / 0.0021 rad
-  int_rate  min/max: -3.5785 / 0.0053 rad
-  tau_rate: 0.3559 s
-  rate filt RMS err: 0.063 deg/s
-  corr(rate,filt): 0.941
+  pitch chatter: 0.0459 deg/s
+  theta pp (settle): 2.665 deg
+  elevator RMS: 6.316 deg
+  elevator std: 0.844 deg
+  elevator jitter (HF RMS): 0.259 deg
+  int_angle min/max: -0.5341 / 0.0018 rad
+  int_rate  min/max: -3.5793 / 0.0050 rad
+  tau_rate: 0.1780 s
+  rate filt RMS err: 0.026 deg/s
+  corr(rate,filt): 0.992
   rate lag est: 0.000 s
   dt: 0.0250 s
