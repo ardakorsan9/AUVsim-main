@@ -103,19 +103,7 @@
     if isempty(K_zdot); K_zdot = 0; end
 
     % Tur5B: flight-path angle (gamma) feedback gain [rad/rad]
-    % EXPERIMENTAL FLAG — NOT production acceptance (full suite never passed
-    % gates; XZ improve only ~5%). Soft-best from sweep was 0.75. Prefer
-    % K_gamma=0 unless an experiment explicitly sets it. Vertical audit uses 0.
+    % Production default K_gamma=0. T5B K_gamma=0.75 remains experimental
+    % unless METRIC_RESCORE mid-target clearly wins (see suite_results/).
     global K_gamma enable_alpha_hat
-    if isempty(K_gamma); K_gamma = 0.75; end  % leftover experimental default
-    if isempty(enable_alpha_hat); enable_alpha_hat = false; end
-
-    % Tur 3: Muw elevator feedforward (does NOT replace feedback)
-    % de_ff = b(u) * clamp( -lambda * Muw*u*w / (Muuds*u_eff^2) )
-    global lambda_muw_ff muw_ff_u_min muw_ff_u_lo muw_ff_u_hi muw_ff_clamp_deg
-    if isempty(lambda_muw_ff); lambda_muw_ff = 0.25; end  % T3C: best lambda
-    muw_ff_u_min = 0.50;          % u_eff floor [m/s]
-    muw_ff_u_lo  = 0.70;          % soft blend: b->0 below
-    muw_ff_u_hi  = 1.20;          % soft blend: b->1 above (cruise)
-    muw_ff_clamp_deg = 4.0;       % clamp |raw| to +/-4 deg (within 3..5)
-end
+    if isempty(K_gamma); K_gamma = 0; end  % production default; T5B 0.75 experimental
