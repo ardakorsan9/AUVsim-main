@@ -1,0 +1,50 @@
+AUV Path Suite Summary
+======================
+
+1) Duz X cizgisi
+  STATUS: OK
+  samples: 480, time: 18.0 s
+  mean cross-track error: 2.053 m
+  max  cross-track error: 10.225 m
+  final surge u: 1.446 m/s
+  mean |yaw err|: 0.00 deg
+  mean |pitch err|: 0.50 deg
+  pitch chatter: 0.5250 deg/s
+  theta pp (settle): 2.631 deg
+  dt: 0.0375 s
+
+2) Egik XZ cizgisi
+  STATUS: OK
+  samples: 587, time: 22.0 s
+  mean cross-track error: 2.546 m
+  max  cross-track error: 12.066 m
+  final surge u: 1.411 m/s
+  mean |yaw err|: 0.00 deg
+  mean |pitch err|: 0.60 deg
+  pitch chatter: 0.6611 deg/s
+  theta pp (settle): 11.228 deg
+  dt: 0.0375 s
+
+3) Yatay daire
+  STATUS: OK
+  samples: 933, time: 35.0 s
+  mean cross-track error: 1.525 m
+  max  cross-track error: 3.156 m
+  final surge u: 1.397 m/s
+  mean |yaw err|: 37.05 deg
+  mean |pitch err|: 0.44 deg
+  pitch chatter: 0.1673 deg/s
+  theta pp (settle): 3.181 deg
+  dt: 0.0375 s
+
+4) Heliks
+  STATUS: OK
+  samples: 1200, time: 45.0 s
+  mean cross-track error: 1.686 m
+  max  cross-track error: 3.033 m
+  final surge u: 1.387 m/s
+  mean |yaw err|: 39.38 deg
+  mean |pitch err|: 0.33 deg
+  pitch chatter: 0.1941 deg/s
+  theta pp (settle): 3.245 deg
+  dt: 0.0375 s
