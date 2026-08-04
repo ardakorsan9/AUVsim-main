@@ -96,4 +96,13 @@ function init_parameters()
     global pitch_ref_max pitch_ref_rate_max
     pitch_ref_max = deg2rad(26);
     pitch_ref_rate_max = deg2rad(6);
+
+    % Tur 3: Muw elevator feedforward (does NOT replace feedback)
+    % δe_ff = b(u) * clamp( -λ * Muw*u*w / (Muuds*u_eff²) )
+    global lambda_muw_ff muw_ff_u_min muw_ff_u_lo muw_ff_u_hi muw_ff_clamp_deg
+    if isempty(lambda_muw_ff); lambda_muw_ff = 0; end  % T3B-1 default: off
+    muw_ff_u_min = 0.50;          % u_eff floor [m/s]
+    muw_ff_u_lo  = 0.70;          % soft blend: b→0 below
+    muw_ff_u_hi  = 1.20;          % soft blend: b→1 above (cruise)
+    muw_ff_clamp_deg = 4.0;       % clamp |raw| to ±4 deg (within 3..5)
 end

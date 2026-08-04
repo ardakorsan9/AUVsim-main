@@ -28,11 +28,24 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     % Optional 10th output via assignin not used; elevator logged for suite metrics
     global last_int_angle last_int_rate last_delta_e
     global last_rate_filt last_theta_phys_dot
+    global last_de_uw_ff last_de_fb last_de_trim
+    global last_M_uw last_M_elev last_M_e_ff last_G_de last_e_theta last_theta_phys
     delta_e_log = zeros(n_steps, 1);
     int_angle_log = zeros(n_steps, 1);
     int_rate_log = zeros(n_steps, 1);
     rate_filt_log = zeros(n_steps, 1);
     rate_raw_log = zeros(n_steps, 1);
+    de_uw_ff_log = zeros(n_steps, 1);
+    de_fb_log = zeros(n_steps, 1);
+    de_trim_log = zeros(n_steps, 1);
+    M_uw_log = zeros(n_steps, 1);
+    M_elev_log = zeros(n_steps, 1);
+    M_e_ff_log = zeros(n_steps, 1);
+    G_de_log = zeros(n_steps, 1);
+    e_theta_log = zeros(n_steps, 1);
+    theta_phys_log = zeros(n_steps, 1);
+    u_log = zeros(n_steps, 1);
+    w_log = zeros(n_steps, 1);
     total_time = 0;
     progress_index = 1;
 
@@ -53,10 +66,11 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
                 guidance_law(current_position, path, progress_index, current_u, current_v);
         end
 
-        % Controller every plant step (dt_controller)
+        % Controller every plant step (dt_controller); pass heave w for Muw-FF
+        current_w = state(9);
         [delta_r, delta_e, thrust] = controller_law(yaw_ref, pitch_ref, u_ref, ...
             current_orientation(3), current_orientation(2), current_rates(3), current_rates(2), ...
-            current_u, r_ff, pitch_ref_dot, current_orientation(1));
+            current_u, r_ff, pitch_ref_dot, current_orientation(1), current_w);
 
         controls.delta_r = delta_r;
         controls.delta_e = delta_e;
@@ -92,11 +106,31 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
         if isempty(last_int_rate); last_int_rate = 0; end
         if isempty(last_rate_filt); last_rate_filt = 0; end
         if isempty(last_theta_phys_dot); last_theta_phys_dot = 0; end
+        if isempty(last_de_uw_ff); last_de_uw_ff = 0; end
+        if isempty(last_de_fb); last_de_fb = 0; end
+        if isempty(last_de_trim); last_de_trim = 0; end
+        if isempty(last_M_uw); last_M_uw = 0; end
+        if isempty(last_M_elev); last_M_elev = 0; end
+        if isempty(last_M_e_ff); last_M_e_ff = 0; end
+        if isempty(last_G_de); last_G_de = 0; end
+        if isempty(last_e_theta); last_e_theta = 0; end
+        if isempty(last_theta_phys); last_theta_phys = 0; end
         delta_e_log(idx) = last_delta_e;
         int_angle_log(idx) = last_int_angle;
         int_rate_log(idx) = last_int_rate;
         rate_filt_log(idx) = last_rate_filt;
         rate_raw_log(idx) = last_theta_phys_dot;
+        de_uw_ff_log(idx) = last_de_uw_ff;
+        de_fb_log(idx) = last_de_fb;
+        de_trim_log(idx) = last_de_trim;
+        M_uw_log(idx) = last_M_uw;
+        M_elev_log(idx) = last_M_elev;
+        M_e_ff_log(idx) = last_M_e_ff;
+        G_de_log(idx) = last_G_de;
+        e_theta_log(idx) = last_e_theta;
+        theta_phys_log(idx) = last_theta_phys;
+        u_log(idx) = current_u;
+        w_log(idx) = current_w;
         total_time = total_time + dt;
         times(idx) = total_time;
 
@@ -109,9 +143,24 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     % Stash control diagnostics for suite metrics (caller reads globals)
     global suite_delta_e_log suite_int_angle_log suite_int_rate_log
     global suite_rate_filt_log suite_rate_raw_log
+    global suite_de_uw_ff_log suite_de_fb_log suite_de_trim_log
+    global suite_M_uw_log suite_M_elev_log suite_M_e_ff_log suite_G_de_log
+    global suite_e_theta_log suite_theta_phys_log suite_u_log suite_w_log suite_pitch_refs_log
     suite_delta_e_log = delta_e_log;
     suite_int_angle_log = int_angle_log;
     suite_int_rate_log = int_rate_log;
     suite_rate_filt_log = rate_filt_log;
     suite_rate_raw_log = rate_raw_log;
+    suite_de_uw_ff_log = de_uw_ff_log;
+    suite_de_fb_log = de_fb_log;
+    suite_de_trim_log = de_trim_log;
+    suite_M_uw_log = M_uw_log;
+    suite_M_elev_log = M_elev_log;
+    suite_M_e_ff_log = M_e_ff_log;
+    suite_G_de_log = G_de_log;
+    suite_e_theta_log = e_theta_log;
+    suite_theta_phys_log = theta_phys_log;
+    suite_u_log = u_log;
+    suite_w_log = w_log;
+    suite_pitch_refs_log = pitch_refs;
 end
