@@ -27,9 +27,12 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     u_refs = zeros(n_steps, 1);
     % Optional 10th output via assignin not used; elevator logged for suite metrics
     global last_int_angle last_int_rate last_delta_e
+    global last_rate_filt last_theta_phys_dot
     delta_e_log = zeros(n_steps, 1);
     int_angle_log = zeros(n_steps, 1);
     int_rate_log = zeros(n_steps, 1);
+    rate_filt_log = zeros(n_steps, 1);
+    rate_raw_log = zeros(n_steps, 1);
     total_time = 0;
     progress_index = 1;
 
@@ -87,9 +90,13 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
         if isempty(last_delta_e); last_delta_e = 0; end
         if isempty(last_int_angle); last_int_angle = 0; end
         if isempty(last_int_rate); last_int_rate = 0; end
+        if isempty(last_rate_filt); last_rate_filt = 0; end
+        if isempty(last_theta_phys_dot); last_theta_phys_dot = 0; end
         delta_e_log(idx) = last_delta_e;
         int_angle_log(idx) = last_int_angle;
         int_rate_log(idx) = last_int_rate;
+        rate_filt_log(idx) = last_rate_filt;
+        rate_raw_log(idx) = last_theta_phys_dot;
         total_time = total_time + dt;
         times(idx) = total_time;
 
@@ -101,7 +108,10 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
 
     % Stash control diagnostics for suite metrics (caller reads globals)
     global suite_delta_e_log suite_int_angle_log suite_int_rate_log
+    global suite_rate_filt_log suite_rate_raw_log
     suite_delta_e_log = delta_e_log;
     suite_int_angle_log = int_angle_log;
     suite_int_rate_log = int_rate_log;
+    suite_rate_filt_log = rate_filt_log;
+    suite_rate_raw_log = rate_raw_log;
 end

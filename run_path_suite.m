@@ -81,12 +81,17 @@ function results = run_path_suite(do_calibrate)
             metrics.dt = dt;
             % Elevator / integrator diagnostics from continuous_path_tracking
             global suite_delta_e_log suite_int_angle_log suite_int_rate_log
+            global suite_rate_filt_log suite_rate_raw_log tau_rate
             if ~isempty(suite_delta_e_log)
                 metrics.elevator_rms_deg = rad2deg(rms(suite_delta_e_log));
                 metrics.elevator_std_deg = rad2deg(std(suite_delta_e_log));
+                % Elevator jitter: HF RMS of delta_e (deg)
+                de_hf = suite_hf_signal(detrend(suite_delta_e_log(:)), dt);
+                metrics.elevator_jitter_deg = rad2deg(rms(de_hf(max(1,round(0.8/dt)):end)));
             else
                 metrics.elevator_rms_deg = NaN;
                 metrics.elevator_std_deg = NaN;
+                metrics.elevator_jitter_deg = NaN;
             end
             if ~isempty(suite_int_angle_log)
                 metrics.int_angle_min = min(suite_int_angle_log);
@@ -102,13 +107,32 @@ function results = run_path_suite(do_calibrate)
                 metrics.int_rate_min = NaN;
                 metrics.int_rate_max = NaN;
             end
+            metrics.tau_rate = tau_rate;
+            if ~isempty(suite_rate_raw_log) && ~isempty(suite_rate_filt_log)
+                i0 = max(1, round(2.0/dt));
+                raw = suite_rate_raw_log(i0:end);
+                fil = suite_rate_filt_log(i0:end);
+                metrics.rate_filt_rms_err_dps = rad2deg(rms(raw - fil));
+                if std(raw) > 1e-9 && std(fil) > 1e-9
+                    c = corrcoef(raw, fil);
+                    metrics.corr_rate_filt = c(1,2);
+                else
+                    metrics.corr_rate_filt = NaN;
+                end
+                metrics.rate_lag_est_s = suite_estimate_lag(raw, fil, dt);
+            else
+                metrics.rate_filt_rms_err_dps = NaN;
+                metrics.corr_rate_filt = NaN;
+                metrics.rate_lag_est_s = NaN;
+            end
 
             fig_path = fullfile(out_dir, sprintf('%02d_%s.png', k, sc.tag));
             save_suite_figure(sc, vehicle_path, times, orientations, yaw_refs, pitch_refs, metrics, fig_path);
 
-            fprintf('DONE  mean_cross_track=%.3f m | max=%.3f m | pitch_chatter=%.4f deg/s | mean|pitch|=%.2f deg | de_rms=%.2f deg | fig=%s\n\n', ...
-                metrics.mean_cross_track, metrics.max_cross_track, metrics.pitch_chatter_dps, ...
-                metrics.mean_pitch_err_deg, metrics.elevator_rms_deg, fig_path);
+            fprintf('DONE  CTE=%.3f m | chatter=%.4f | |pitch|=%.2f | de_jit=%.3f | lag=%.3fs | corr=%.3f | fig=%s\n\n', ...
+                metrics.mean_cross_track, metrics.pitch_chatter_dps, ...
+                metrics.mean_pitch_err_deg, metrics.elevator_jitter_deg, ...
+                metrics.rate_lag_est_s, metrics.corr_rate_filt, fig_path);
 
         catch ME
             metrics = struct( ...
@@ -303,14 +327,32 @@ function write_summary(results, summary_file)
         if isfield(r, 'elevator_rms_deg')
             fprintf(fid, '  elevator RMS: %.3f deg\n', r.elevator_rms_deg);
             fprintf(fid, '  elevator std: %.3f deg\n', r.elevator_std_deg);
+            fprintf(fid, '  elevator jitter (HF RMS): %.3f deg\n', r.elevator_jitter_deg);
         end
         if isfield(r, 'int_angle_min')
             fprintf(fid, '  int_angle min/max: %.4f / %.4f rad\n', r.int_angle_min, r.int_angle_max);
             fprintf(fid, '  int_rate  min/max: %.4f / %.4f rad\n', r.int_rate_min, r.int_rate_max);
+        end
+        if isfield(r, 'tau_rate')
+            fprintf(fid, '  tau_rate: %.4f s\n', r.tau_rate);
+            fprintf(fid, '  rate filt RMS err: %.3f deg/s\n', r.rate_filt_rms_err_dps);
+            fprintf(fid, '  corr(rate,filt): %.3f\n', r.corr_rate_filt);
+            fprintf(fid, '  rate lag est: %.3f s\n', r.rate_lag_est_s);
         end
         if isfield(r, 'dt')
             fprintf(fid, '  dt: %.4f s\n', r.dt);
         end
     end
     fclose(fid);
+end
+
+function lag = suite_estimate_lag(a, b, dt)
+    a = a(:) - mean(a); b = b(:) - mean(b);
+    maxlag = min(40, floor(numel(a)/4));
+    if maxlag < 2 || std(a) < 1e-12 || std(b) < 1e-12
+        lag = NaN; return;
+    end
+    [c, lags] = xcorr(b, a, maxlag, 'coeff');
+    [~, ix] = max(c);
+    lag = lags(ix) * dt;
 end
