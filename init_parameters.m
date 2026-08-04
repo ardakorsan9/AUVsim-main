@@ -97,6 +97,11 @@
     pitch_ref_max = deg2rad(26);
     pitch_ref_rate_max = deg2rad(6);
 
+    % Tur5A: inertial zdot error gain on pitch_ref [rad / (m/s)]
+    % Selected from XZ sweep (0.50): best CTE with chatter < 0.12; CTE gate still FAIL.
+    global K_zdot
+    if isempty(K_zdot); K_zdot = 0.50; end
+
     % Tur 3: Muw elevator feedforward (does NOT replace feedback)
     % de_ff = b(u) * clamp( -lambda * Muw*u*w / (Muuds*u_eff^2) )
     global lambda_muw_ff muw_ff_u_min muw_ff_u_lo muw_ff_u_hi muw_ff_clamp_deg

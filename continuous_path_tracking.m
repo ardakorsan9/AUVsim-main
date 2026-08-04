@@ -61,13 +61,13 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
         current_v = state(8);
         current_w = state(9);
 
-        % Inertial horizontal speed for Tur4A r_ff = U_h * kappa
-        U_h = inertial_horizontal_speed(current_orientation, current_u, current_v, current_w);
+        % Inertial velocity for Tur4A (U_h) and Tur5A (zdot)
+        [U_h, zdot_inertial] = inertial_velocity_ned(current_orientation, current_u, current_v, current_w);
 
         % Guidance tick (integrators/filters advance only here, with dt_guidance)
         if mod(idx - 1, guidance_period) == 0
             [yaw_ref, pitch_ref, u_ref, progress_index, r_ff, pitch_ref_dot] = ...
-                guidance_law(current_position, path, progress_index, current_u, current_v, U_h);
+                guidance_law(current_position, path, progress_index, current_u, current_v, U_h, zdot_inertial);
         end
 
         % Controller every plant step (dt_controller); pass heave w for Muw-FF
@@ -168,8 +168,9 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     suite_pitch_refs_log = pitch_refs;
 end
 
-function U_h = inertial_horizontal_speed(ori, u, v, w)
-% INERTIAL_HORIZONTAL_SPEED  U_h = hypot(x_dot, y_dot) from body vel via R(phi,theta,psi).
+function [U_h, zdot] = inertial_velocity_ned(ori, u, v, w)
+% INERTIAL_VELOCITY_NED  [x_dot;y_dot;z_dot] = R(phi,theta,psi)*[u;v;w]
+% U_h = hypot(x_dot,y_dot); zdot = z_dot (Tur4A / Tur5A).
     phi = ori(1); theta = ori(2); psi = ori(3);
     R = [cos(psi)*cos(theta), ...
          cos(psi)*sin(theta)*sin(phi) - sin(psi)*cos(phi), ...
@@ -182,4 +183,5 @@ function U_h = inertial_horizontal_speed(ori, u, v, w)
          cos(theta)*cos(phi)];
     pos_dot = R * [u; v; w];
     U_h = hypot(pos_dot(1), pos_dot(2));
+    zdot = pos_dot(3);
 end

@@ -1,19 +1,24 @@
-function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] = guidance_law(current_position, path, progress_index, u_body, v_body, U_h)
+function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] = guidance_law(current_position, path, progress_index, u_body, v_body, U_h, zdot_inertial)
 % Path following guidance + beta compensation + limited pitch_ref.
 % pitch_ref_dot: physical pitch reference rate [rad/s]
 % U_h (optional): inertial horizontal speed hypot(x_dot,y_dot). If omitted,
 %   fallback U_h = hypot(u_body,v_body). Tur4A: r_ff = U_h * kappa (no 1.15*u_ref).
+% zdot_inertial (optional): inertial vertical velocity (R*[u;v;w])_z. Tur5A:
+%   pitch_ref += K_zdot * (zdot_path - zdot_inertial), same sign family as depth-P.
 
     global lookahead_distance desired_speed
     global pitch_ref_max pitch_ref_rate_max
     global dt_guidance dt_controller
     global last_guidance_U_h last_guidance_kappa last_r_ff
+    global K_zdot
 
-    persistent s_prog yaw_cont pitch_f z_e_f z_e_i kappa_f chi_f yaw_out pitch_out initialized
+    persistent s_prog yaw_cont pitch_f z_e_f z_e_i zd_e_f kappa_f chi_f yaw_out pitch_out initialized
     if isempty(initialized); initialized = false; end
     if isempty(z_e_i); z_e_i = 0; end
+    if isempty(zd_e_f); zd_e_f = 0; end
     if isempty(pitch_ref_max); pitch_ref_max = deg2rad(25); end
     if isempty(pitch_ref_rate_max); pitch_ref_rate_max = deg2rad(5); end
+    if isempty(K_zdot); K_zdot = 0; end
     if isempty(dt_guidance)
         if isempty(dt_controller); dt_controller = 0.0375; end
         dt_guidance = dt_controller;
@@ -27,6 +32,9 @@ function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] =
     if nargin < 5 || isempty(v_body); v_body = 0.0; end
     if nargin < 6 || isempty(U_h)
         U_h = hypot(u_body, v_body); % body-horizontal fallback
+    end
+    if nargin < 7 || isempty(zdot_inertial)
+        zdot_inertial = 0; % no D term without inertial zdot
     end
     U_h = max(U_h, 0);
 
@@ -51,6 +59,7 @@ function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] =
         pitch_f = nan;   % cold-start from path slope (critical for XZ)
         z_e_f = 0;
         z_e_i = 0;
+        zd_e_f = 0;
         kappa_f = 0;
         chi_f = nan;
         initialized = true;
@@ -166,9 +175,17 @@ function [yaw_ref, pitch_ref, u_ref, next_progress_index, r_ff, pitch_ref_dot] =
         pitch_geom = 0.65 * pitch_path + 0.35 * pitch_now;
     end
     % Soft depth P+I (keep P mild; I kills steady B>W / climb lag bias)
+    % Sign: cte(3)=z_veh-z_path; pitch_corr = -Kz*cte = +Kz*(z_path-z)  [preserved]
     z_e_i = z_e_i + z_e_f * dt_nom;
     z_e_i = max(min(z_e_i, 25), -25);
-    pitch_corr = -0.050 * z_e_f - 0.006 * z_e_i;
+    % Tur5A: inertial zdot error — same sign family as depth-P
+    % e_zdot = zdot_path - zdot_inertial; pitch += K_zdot * e_zdot
+    % <=> pitch += -K_zdot * (zdot_inertial - zdot_path)
+    U_along = max(hypot(U_h, zdot_inertial), 0.3);
+    zdot_path = t_hat(3) * U_along; % unit tangent * inertial speed
+    zd_e_raw = zdot_inertial - zdot_path; % vehicle-minus-path (like cte)
+    zd_e_f = 0.85 * zd_e_f + 0.15 * zd_e_raw;
+    pitch_corr = -0.050 * z_e_f - 0.006 * z_e_i - K_zdot * zd_e_f;
     pitch_corr = max(min(pitch_corr, deg2rad(9)), deg2rad(-9));
     pitch_raw = pitch_geom + pitch_corr;
     pitch_raw = max(min(pitch_raw, pitch_ref_max), -pitch_ref_max);
