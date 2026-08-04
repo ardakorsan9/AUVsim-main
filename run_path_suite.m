@@ -79,13 +79,36 @@ function results = run_path_suite(do_calibrate)
             metrics.total_time = total_time;
             metrics.n_samples = size(vehicle_path, 1);
             metrics.dt = dt;
+            % Elevator / integrator diagnostics from continuous_path_tracking
+            global suite_delta_e_log suite_int_angle_log suite_int_rate_log
+            if ~isempty(suite_delta_e_log)
+                metrics.elevator_rms_deg = rad2deg(rms(suite_delta_e_log));
+                metrics.elevator_std_deg = rad2deg(std(suite_delta_e_log));
+            else
+                metrics.elevator_rms_deg = NaN;
+                metrics.elevator_std_deg = NaN;
+            end
+            if ~isempty(suite_int_angle_log)
+                metrics.int_angle_min = min(suite_int_angle_log);
+                metrics.int_angle_max = max(suite_int_angle_log);
+            else
+                metrics.int_angle_min = NaN;
+                metrics.int_angle_max = NaN;
+            end
+            if ~isempty(suite_int_rate_log)
+                metrics.int_rate_min = min(suite_int_rate_log);
+                metrics.int_rate_max = max(suite_int_rate_log);
+            else
+                metrics.int_rate_min = NaN;
+                metrics.int_rate_max = NaN;
+            end
 
             fig_path = fullfile(out_dir, sprintf('%02d_%s.png', k, sc.tag));
             save_suite_figure(sc, vehicle_path, times, orientations, yaw_refs, pitch_refs, metrics, fig_path);
 
-            fprintf('DONE  mean_cross_track=%.3f m | max=%.3f m | pitch_chatter=%.4f deg/s | mean|pitch|=%.2f deg | fig=%s\n\n', ...
+            fprintf('DONE  mean_cross_track=%.3f m | max=%.3f m | pitch_chatter=%.4f deg/s | mean|pitch|=%.2f deg | de_rms=%.2f deg | fig=%s\n\n', ...
                 metrics.mean_cross_track, metrics.max_cross_track, metrics.pitch_chatter_dps, ...
-                metrics.mean_pitch_err_deg, fig_path);
+                metrics.mean_pitch_err_deg, metrics.elevator_rms_deg, fig_path);
 
         catch ME
             metrics = struct( ...
@@ -276,6 +299,14 @@ function write_summary(results, summary_file)
         if isfield(r, 'pitch_chatter_dps')
             fprintf(fid, '  pitch chatter: %.4f deg/s\n', r.pitch_chatter_dps);
             fprintf(fid, '  theta pp (settle): %.3f deg\n', r.theta_pp_deg);
+        end
+        if isfield(r, 'elevator_rms_deg')
+            fprintf(fid, '  elevator RMS: %.3f deg\n', r.elevator_rms_deg);
+            fprintf(fid, '  elevator std: %.3f deg\n', r.elevator_std_deg);
+        end
+        if isfield(r, 'int_angle_min')
+            fprintf(fid, '  int_angle min/max: %.4f / %.4f rad\n', r.int_angle_min, r.int_angle_max);
+            fprintf(fid, '  int_rate  min/max: %.4f / %.4f rad\n', r.int_rate_min, r.int_rate_max);
         end
         if isfield(r, 'dt')
             fprintf(fid, '  dt: %.4f s\n', r.dt);
