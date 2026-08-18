@@ -32,7 +32,13 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     global last_M_uw last_M_elev last_M_e_ff last_G_de last_e_theta last_theta_phys
     global last_gamma_actual last_gamma_path last_alpha_eff last_e_gamma
     global last_e_z last_e_zdot last_zdot_inertial last_alpha_hat
+    global last_delta_r last_dr_yaw last_dr_p last_dr_damp last_g_ac
     delta_e_log = zeros(n_steps, 1);
+    delta_r_log = zeros(n_steps, 1);
+    dr_yaw_log = zeros(n_steps, 1);
+    dr_p_log = zeros(n_steps, 1);
+    dr_damp_log = zeros(n_steps, 1);
+    g_ac_log = zeros(n_steps, 1);
     int_angle_log = zeros(n_steps, 1);
     int_rate_log = zeros(n_steps, 1);
     rate_filt_log = zeros(n_steps, 1);
@@ -81,10 +87,11 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
                 U_h, zdot_inertial, theta_phys_now);
         end
 
-        % Controller every plant step (dt_controller); pass heave w for Muw-FF
+        % Controller every plant step; pass heave w (Muw-FF) and BODY p=state(10)
         [delta_r, delta_e, thrust] = controller_law(yaw_ref, pitch_ref, u_ref, ...
             current_orientation(3), current_orientation(2), current_rates(3), current_rates(2), ...
-            current_u, r_ff, pitch_ref_dot, current_orientation(1), current_w);
+            current_u, r_ff, pitch_ref_dot, current_orientation(1), current_w, ...
+            current_rates(1));
 
         controls.delta_r = delta_r;
         controls.delta_e = delta_e;
@@ -116,6 +123,11 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
         pitch_refs(idx) = pitch_ref;
         u_refs(idx) = u_ref;
         if isempty(last_delta_e); last_delta_e = 0; end
+        if isempty(last_delta_r); last_delta_r = delta_r; end
+        if isempty(last_dr_yaw); last_dr_yaw = 0; end
+        if isempty(last_dr_p); last_dr_p = 0; end
+        if isempty(last_dr_damp); last_dr_damp = 0; end
+        if isempty(last_g_ac); last_g_ac = 1; end
         if isempty(last_int_angle); last_int_angle = 0; end
         if isempty(last_int_rate); last_int_rate = 0; end
         if isempty(last_rate_filt); last_rate_filt = 0; end
@@ -137,6 +149,11 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
         if isempty(last_e_zdot); last_e_zdot = 0; end
         if isempty(last_zdot_inertial); last_zdot_inertial = 0; end
         delta_e_log(idx) = last_delta_e;
+        delta_r_log(idx) = last_delta_r;
+        dr_yaw_log(idx) = last_dr_yaw;
+        dr_p_log(idx) = last_dr_p;
+        dr_damp_log(idx) = last_dr_damp;
+        g_ac_log(idx) = last_g_ac;
         int_angle_log(idx) = last_int_angle;
         int_rate_log(idx) = last_int_rate;
         rate_filt_log(idx) = last_rate_filt;
@@ -176,7 +193,13 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
     global suite_e_theta_log suite_theta_phys_log suite_u_log suite_w_log suite_pitch_refs_log
     global suite_gamma_actual_log suite_gamma_path_log suite_alpha_eff_log suite_e_gamma_log
     global suite_e_z_log suite_e_zdot_log suite_zdot_inertial_log
+    global suite_delta_r_log suite_dr_yaw_log suite_dr_p_log suite_dr_damp_log suite_g_ac_log
     suite_delta_e_log = delta_e_log;
+    suite_delta_r_log = delta_r_log;
+    suite_dr_yaw_log = dr_yaw_log;
+    suite_dr_p_log = dr_p_log;
+    suite_dr_damp_log = dr_damp_log;
+    suite_g_ac_log = g_ac_log;
     suite_int_angle_log = int_angle_log;
     suite_int_rate_log = int_rate_log;
     suite_rate_filt_log = rate_filt_log;

@@ -1,12 +1,16 @@
-function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_ref, psi, theta, r, q, u, r_ff, pitch_ref_dot, phi, w)
+function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_ref, psi, theta, r, q, u, r_ff, pitch_ref_dot, phi, w, p)
 % Cascaded pitch: angle outer loop -> rate inner loop -> elevator
 % Physical pitch: theta_phys = -theta
 % Physical pitch rate: theta_phys_dot = -q*cos(phi) + r*sin(phi)
 % Optional 4th output `dbg` (Tur 2.5): angle-I / trim components; production
 % callers using 3 outputs are unchanged.
 % Optional 12th input `w`: heave for Muw feedforward (Tur 3). λ=0 => FF off.
+% Optional 13th input `p`: BODY roll rate (default 0). Roll damp:
+%   dr_damp = g_ac*(-Kp_roll*p), Kphi=0; summed BEFORE mag/rate limit.
+%   Kp_roll from YAW_ROLL_DAMPING_BACKOFF PASS (0.605072 s).
 
     global Kp_psi Kd_psi Kp_x
+    global Kp_roll   % roll-rate rudder damp [s]; production default 0.605072
     global Kp_angle Ki_angle Kp_rate Ki_rate Kaw_pitch Kd_rate Kd_damp
     global delta_r_max delta_e_max thrust_max thrust_min
     global thrust_trim
@@ -23,6 +27,7 @@ function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_
     global last_rate_filt last_theta_phys_dot
     global last_de_trim last_delta_e_angle_I last_e_theta last_theta_phys
     global last_de_uw_ff last_de_fb last_M_uw last_M_elev last_M_e_ff last_G_de last_M_total_pitch
+    global last_delta_r last_dr_yaw last_dr_p last_dr_damp last_g_ac
 
     if isempty(prev_delta_e); prev_delta_e = 0; end
     if isempty(prev_delta_r); prev_delta_r = 0; end
@@ -37,6 +42,7 @@ function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_
     if nargin < 10 || isempty(pitch_ref_dot); pitch_ref_dot = 0; end
     if nargin < 11 || isempty(phi); phi = 0; end
     if nargin < 12 || isempty(w); w = 0; end
+    if nargin < 13 || isempty(p); p = 0; end
     if isempty(elevator_sign); elevator_sign = 1; end
     if isempty(lambda_muw_ff); lambda_muw_ff = 0; end
     if isempty(muw_ff_u_min); muw_ff_u_min = 0.50; end
@@ -45,15 +51,22 @@ function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_
     if isempty(muw_ff_clamp_deg); muw_ff_clamp_deg = 4.0; end
     if isempty(Muw); Muw = 24; end
     if isempty(Muuds); Muuds = -6.15; end
+    if isempty(Kp_roll); Kp_roll = 0.605072; end  % BACKOFF PASS Kp2
 
     if isempty(dt_controller); dt_controller = 0.0375; end
     if isempty(tau_rate); tau_rate = -0.075 / log(0.90); end
     dt = dt_controller;
 
-    % ----- Yaw (unchanged structure) -----
+    % ----- Yaw + roll-rate damp (sum BEFORE mag/rate limit; Kphi=0) -----
     e_psi = wrapToPi(yaw_ref - psi);
     e_r = r - r_ff;
-    delta_r_cmd = Kp_psi * e_psi - Kd_psi * e_r;
+    dr_yaw = Kp_psi * e_psi - Kd_psi * e_r;
+    e_psi0 = deg2rad(3);
+    e_r0 = deg2rad(8);
+    g_ac = 1 / (1 + (e_psi / max(e_psi0, eps))^2 + (e_r / max(e_r0, eps))^2);
+    dr_p = -Kp_roll * p;
+    dr_damp = g_ac * dr_p;
+    delta_r_cmd = dr_yaw + dr_damp;
     delta_r_cmd = max(min(delta_r_cmd, delta_r_max), -delta_r_max);
 
     % ----- Physical pitch kinematics -----
@@ -93,6 +106,13 @@ function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_
     u_el = Kp_rate * e_rate + Ki_rate * int_rate + Kd_rate * de_rate - Kd_damp * rate_filt;
     de_fb = elevator_sign * u_el;
 
+    % Climb equilibrium FF (scheduled on physical pitch_ref; not I memory)
+    % k_gamma = 2.8793/21.8014 from ATTRIB λ=0 steady mean(de_fb)/path_pitch
+    k_gamma_climb = 0.1320695001;
+    de_climb_lim = deg2rad(2.8793);
+    gamma_ref = pitch_ref;  % physical pitch / climb-path ref [rad]
+    de_climb_ff = max(min(k_gamma_climb * gamma_ref, de_climb_lim), -de_climb_lim);
+
     % Tur 3: graduated Muw feedforward (additive; λ=0 => identically zero)
     u_abs = abs(u);
     b_u = max(0, min(1, (u_abs - muw_ff_u_lo) / max(muw_ff_u_hi - muw_ff_u_lo, 1e-6)));
@@ -106,10 +126,10 @@ function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_
     end
     de_ff_lim = deg2rad(muw_ff_clamp_deg);
     de_uw_ff = b_u * max(min(de_uw_ff_raw, de_ff_lim), -de_ff_lim);
-    M_e_ff = G_de * de_uw_ff;              % elevator moment from FF only
-    M_elev = G_de * (de_trim + de_uw_ff + de_fb);  % approx total elevator moment cmd
+    M_e_ff = G_de * de_uw_ff;              % elevator moment from Muw FF only
+    M_elev = G_de * (de_trim + de_uw_ff + de_climb_ff + de_fb);
 
-    delta_e_unsat = de_trim + de_uw_ff + de_fb;
+    delta_e_unsat = de_trim + de_uw_ff + de_climb_ff + de_fb;
     delta_e_cmd = max(min(delta_e_unsat, delta_e_max), -delta_e_max);
 
     % Steady-state angle-I elevator contribution (rate~0): sign*Kp_rate*Ki*int
@@ -136,6 +156,11 @@ function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_
     last_int_angle = int_angle;
     last_int_rate = int_rate;
     last_delta_e = delta_e;
+    last_delta_r = delta_r;
+    last_dr_yaw = dr_yaw;
+    last_dr_p = dr_p;
+    last_dr_damp = dr_damp;
+    last_g_ac = g_ac;
     last_rate_filt = rate_filt;
     last_theta_phys_dot = theta_phys_dot;
     last_de_trim = de_trim;
@@ -174,7 +199,17 @@ function [delta_r, delta_e, thrust, dbg] = controller_law(yaw_ref, pitch_ref, u_
             'b_u', b_u, ...
             'rate_filt', rate_filt, ...
             'theta_rate_cmd', theta_rate_cmd, ...
-            'mag_sat', double(abs(delta_e_unsat) > delta_e_max + 1e-9));
+            'mag_sat', double(abs(delta_e_unsat) > delta_e_max + 1e-9), ...
+            'p', p, ...
+            'e_psi', e_psi, ...
+            'e_r', e_r, ...
+            'dr_yaw', dr_yaw, ...
+            'dr_p', dr_p, ...
+            'dr_damp', dr_damp, ...
+            'g_ac', g_ac, ...
+            'delta_r_cmd', delta_r_cmd, ...
+            'delta_r', delta_r, ...
+            'Kp_roll', Kp_roll);
     end
 end
 

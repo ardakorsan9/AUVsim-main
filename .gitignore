@@ -1,0 +1,50 @@
+# Editor / agent local state
+.cursor/
+.agents/
+
+# MATLAB/Simulink generated outputs and caches
+slprj/
+codegen/
+**/slprj/
+**/codegen/
+*.slxc
+*.mexw64
+*.mex*
+*.asv
+*.autosave
+*.m~
+
+# Python/runtime caches
+__pycache__/
+*.pyc
+*.pyo
+
+# Transient logs and temporary files
+*.log
+*.tmp
+*.temp
+*.lock
+
+# Isolated probes, rejected-candidate scratch, and local backups
+/.gate8_*/
+/.roll_closure_bak/
+/shadow_r10/
+
+# Generated evidence is preserved by SHA-256 manifest. Keep only release-critical
+# parity corpora and the compact visual release pack in ordinary Git history.
+*.mat
+*.png
+!suite_results/CG2A_CONTROLLER_GOLDEN_V1.mat
+!suite_results/CG2B_GUIDANCE_GOLDEN_V1.mat
+!suite_results/AUV_VISUAL_EVIDENCE_PACK.png
+!suite_results/AUV_VISUAL_EVIDENCE_PACK_00_overview.png
+!suite_results/AUV_VISUAL_EVIDENCE_PACK_01_path_cte.png
+!suite_results/AUV_VISUAL_EVIDENCE_PACK_02_attitude.png
+!suite_results/AUV_VISUAL_EVIDENCE_PACK_03_kinematics.png
+!suite_results/AUV_VISUAL_EVIDENCE_PACK_04_actuators.png
+!suite_results/AUV_VISUAL_EVIDENCE_PACK_05_rates_roll.png
+!suite_results/AUV_VISUAL_EVIDENCE_PACK_06_cusum_fault.png
+!suite_results/FINAL_TRACKING_X.png
+!suite_results/FINAL_TRACKING_XZ.png
+!suite_results/FINAL_TRACKING_HELIX_R10.png
+
