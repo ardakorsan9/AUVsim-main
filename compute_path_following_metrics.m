@@ -49,15 +49,30 @@ function m = compute_path_following_metrics(path, vehicle_path, velocities, orie
         if i == 1
             [s_near, ~] = project_on_path(p, path, s_nodes, 0, s_total, is_closed);
             s_prog = s_near;
+            if is_closed
+                s_prog = mod(s_prog, s_total);
+            end
         else
-            s_lo = max(0, s_prog - 0.15);
-            s_hi = min(s_total, s_prog + max(3.0, 2.5*L));
-            [s_near, ~] = project_on_path(p, path, s_nodes, s_lo, s_hi, is_closed);
-            if s_near >= s_total - 1e-6
-                s_prog = s_total;
+            if is_closed
+                % Periodic wrap: search forward window across seam; never clamp to s_total.
+                win = max(3.0, 2.5*L);
+                s_lo = mod(s_prog - 0.15, s_total);
+                [s_near, ~] = project_wrapped(p, path, s_nodes, s_lo, win, s_total);
+                ds = wrap_arc(s_near - s_prog, s_total);
+                if ds >= -0.25
+                    s_prog = mod(s_prog + max(ds, -0.05), s_total);
+                end
             else
-                s_prog = max(s_prog, s_near - 0.05);
-                s_prog = min(s_prog, s_total);
+                % Open-path clamp (unchanged)
+                s_lo = max(0, s_prog - 0.15);
+                s_hi = min(s_total, s_prog + max(3.0, 2.5*L));
+                [s_near, ~] = project_on_path(p, path, s_nodes, s_lo, s_hi, is_closed);
+                if s_near >= s_total - 1e-6
+                    s_prog = s_total;
+                else
+                    s_prog = max(s_prog, s_near - 0.05);
+                    s_prog = min(s_prog, s_total);
+                end
             end
         end
         [p_d, t_hat] = sample_path(path, s_nodes, s_prog, is_closed);
@@ -219,6 +234,26 @@ end
 
 function [s_best, d_best] = project_on_path(p, path, s_nodes, s_lo, s_hi, is_closed) %#ok<INUSD>
     [s_best, d_best] = project_interval(p, path, s_nodes, max(0,s_lo), min(s_nodes(end),s_hi));
+end
+
+function [s_best, d_best] = project_wrapped(p, path, s_nodes, s_lo, win, s_total)
+    % Project onto segments covering [s_lo, s_lo+win] mod s_total (closed paths).
+    s_hi = s_lo + win;
+    if s_hi <= s_total
+        [s_best, d_best] = project_interval(p, path, s_nodes, s_lo, min(s_total, s_hi));
+    else
+        [s1, d1] = project_interval(p, path, s_nodes, s_lo, s_total);
+        [s2, d2] = project_interval(p, path, s_nodes, 0, mod(s_hi, s_total));
+        if d1 <= d2
+            s_best = s1; d_best = d1;
+        else
+            s_best = s2; d_best = d2;
+        end
+    end
+end
+
+function ds = wrap_arc(ds, s_total)
+    ds = mod(ds + s_total/2, s_total) - s_total/2;
 end
 
 function [s_best, d_best] = project_interval(p, path, s_nodes, s_lo, s_hi)

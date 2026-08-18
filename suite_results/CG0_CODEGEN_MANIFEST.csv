@@ -1,0 +1,179 @@
+path,primary_class,secondary_status,role,codegen_risk,evidence,owner_gate,bytes
+_ref_github_underwater777_vehicle_dynamics.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,_ref_github_*:1 reference plant copy,CG0_archive,4382
+build_pitch_trim_table.m,SHARED_SUPPORT,NEEDS_CG1_REVIEW,helper,MED,build_pitch_trim_table.m:1-4; feeds trim_* globals,CG0,7420
+closed_loop_actuator_realism_case.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,closed_loop_actuator_realism_case.m:1 actuator realism case; production untouched,CG0,3934
+closed_loop_actuator_realism_harness_fix_case.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,closed_loop_actuator_realism_harness_fix_case.m:1 actuator realism case; production untouched,CG0,4132
+compute_path_following_metrics.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,compute_path_following_metrics.m:1 header/call inventory,CG0,11604
+compute_pitch_window_metrics.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,compute_pitch_window_metrics.m:1 header/call inventory,CG0,5277
+continuous_path_tracking.m,SIMULATION_ONLY,FULLY_REVIEWED,entry,HOST_ONLY_HIGH,"continuous_path_tracking.m:6,71,84-101,228-244; Gate9B EG-06/23",Gate9B/CG0,10845
+continuous_path_tracking_propulsion.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,continuous_path_tracking_propulsion.m:1 PROP harness clone,CG0_archive,15861
+controller_law.m,DEPLOY,FULLY_REVIEWED,entry,HIGH,"controller_law.m:1,12-30,23-25,61,222; Gate9B EG-08/EG-26",Gate9B/CG0,9402
+controller_law_trimmed.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,controller_law_trimmed.m:1 trimmed variant,CG0_archive,1123
+diag_pitch_chatter.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,diag_pitch_chatter.m:1 diagnostic harness,CG0,49033
+diag_tur25_bias.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,diag_tur25_bias.m:1 diagnostic harness,CG0,26766
+extract_pitch_subsystem.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,extract_pitch_subsystem.m:1 header/call inventory,CG0,609
+find_pitch_trim.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,find_pitch_trim.m:1 header/call inventory,CG0,2303
+find_speed_trim.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,find_speed_trim.m:1 header/call inventory,CG0,1356
+gate8_fig_main.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,gate8_fig_main.m:1 Gate8 shadow/report helper,Gate8,7725
+gate8_fig_qa.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,gate8_fig_qa.m:1 Gate8 shadow/report helper,Gate8,3576
+gate8_r10_yaw_feasibility_report.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,gate8_r10_yaw_feasibility_report.m:1 Gate8 shadow/report helper,Gate8,46381
+gate8_r10_yaw_feasibility_trim.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,gate8_r10_yaw_feasibility_trim.m:1 Gate8 shadow/report helper,Gate8,10920
+gate8_shadow_plant_seam.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,gate8_shadow_plant_seam.m:1 Gate8 shadow/report helper,Gate8,4909
+gate8_write_md.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,gate8_write_md.m:1 Gate8 shadow/report helper,Gate8,13065
+gate8_yaw_term_audit_core.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,gate8_yaw_term_audit_core.m:1 Gate8 shadow/report helper,Gate8,22570
+generate_balanced_helical_path.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,generate_balanced_helical_path.m:1 path generator host,CG0,564
+guidance_law.m,DEPLOY,FULLY_REVIEWED,entry,HIGH,"guidance_law.m:1,13-21,54,164,283-394; Gate9B §2",Gate9B/CG0,14601
+guidance_law_depth_gamma_structural.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_depth_gamma_structural.m:1 ISOLATED CANDIDATE header,CG0_archive,19564
+guidance_law_depth_gamma_structural_attempt3.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_depth_gamma_structural_attempt3.m:1 ISOLATED CANDIDATE header,CG0_archive,21278
+guidance_law_depth_gamma_structural_blocker_fix.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_depth_gamma_structural_blocker_fix.m:1 ISOLATED CANDIDATE header,CG0_archive,20300
+guidance_law_depth_i_ablation.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_depth_i_ablation.m:1 ISOLATED CANDIDATE header,CG0_archive,14966
+guidance_law_depth_ndo.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_depth_ndo.m:1 ISOLATED CANDIDATE header,CG0_archive,14902
+guidance_law_depth_p_backoff.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_depth_p_backoff.m:1 ISOLATED CANDIDATE header,CG0_archive,15093
+guidance_law_depth_to_gamma.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_depth_to_gamma.m:1 ISOLATED CANDIDATE header,CG0_archive,15819
+guidance_law_feasibility_governor.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_feasibility_governor.m:1 ISOLATED CANDIDATE header,CG0_archive,17554
+guidance_law_trim_alpha_ff.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_trim_alpha_ff.m:1 ISOLATED CANDIDATE header,CG0_archive,15106
+guidance_law_trim_alpha_ff_cosine_softstart.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_trim_alpha_ff_cosine_softstart.m:1 ISOLATED CANDIDATE header,CG0_archive,17381
+guidance_law_trim_alpha_ff_rate_limit.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_trim_alpha_ff_rate_limit.m:1 ISOLATED CANDIDATE header,CG0_archive,15852
+guidance_law_water_current_admission_governor.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_water_current_admission_governor.m:1 ISOLATED CANDIDATE header,Gate7,5095
+guidance_law_water_current_arc_governor.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,guidance_law_water_current_arc_governor.m:1 ISOLATED CANDIDATE header,CG0_archive,3572
+init_parameters.m,SHARED_SUPPORT,FULLY_REVIEWED,helper,MED,"init_parameters.m:1-18,50-58,74-93; called cpt:6",Gate9B/CG0,4205
+isolated_online_rudder_residual_monitor.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,isolated_online_rudder_residual_monitor.m:1-4; not in cpt graph,CG0,6475
+navigation_multirate_ekf_availability.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,navigation_multirate_ekf_availability.m:1 Isolated Gate5* header; not called by cpt,Gate5,72784
+navigation_multirate_ekf_baseline.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,navigation_multirate_ekf_baseline.m:1 Isolated Gate5* header; not called by cpt,Gate5,54872
+navigation_multirate_sensor_chain.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,navigation_multirate_sensor_chain.m:1 Isolated Gate5* header; not called by cpt,Gate5,38787
+numerical_linearize_auv.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,numerical_linearize_auv.m:1 header/call inventory,CG0,1637
+plot_simulation_results.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,plot_simulation_results.m:1 plot host,CG0,5751
+propulsion_power_compute_case.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,propulsion_power_compute_case.m:1 header/call inventory,CG0,14252
+run_actuator_dynamics_realism_baseline.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_actuator_dynamics_realism_baseline.m:1 header run_* suite driver,suite/host,29077
+run_actuator_rudder_deadband_stub.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_actuator_rudder_deadband_stub.m:1 header run_* suite driver,Gate7,26344
+run_actuator_telemetry_separability.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_actuator_telemetry_separability.m:1 header run_* suite driver,suite/host,44532
+run_alpha_comp_speed_hold_benchmark.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_alpha_comp_speed_hold_benchmark.m:1 header run_* suite driver,suite/host,45710
+run_alpha_cosine_softstart.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_alpha_cosine_softstart.m:1 header run_* suite driver,suite/host,62165
+run_alpha_depth_i_ablation.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_alpha_depth_i_ablation.m:1 header run_* suite driver,suite/host,50951
+run_alpha_depth_p_backoff.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_alpha_depth_p_backoff.m:1 header run_* suite driver,suite/host,52036
+run_auv_visual_evidence_pack.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_auv_visual_evidence_pack.m:1 header run_* suite driver,suite/host,37731
+run_bounded_current_hook.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_bounded_current_hook.m:1 header run_* suite driver,suite/host,36342
+run_closed_loop_actuator_realism.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_closed_loop_actuator_realism.m:1 header run_* suite driver,suite/host,12093
+run_closed_loop_actuator_realism_harness_final_attempt3.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_closed_loop_actuator_realism_harness_final_attempt3.m:1 header run_* suite driver,suite/host,25381
+run_closed_loop_actuator_realism_harness_fix.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_closed_loop_actuator_realism_harness_fix.m:1 header run_* suite driver,suite/host,23384
+run_combined_6dof_disturbance_baseline.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_combined_6dof_disturbance_baseline.m:1 header run_* suite driver,suite/host,55729
+run_crab_current_ff_candidate.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_crab_current_ff_candidate.m:1 header run_* suite driver,suite/host,57506
+run_ctrl_obs_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_ctrl_obs_audit.m:1 header run_* suite driver,suite/host,28649
+run_current_observer_bias_latency.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_current_observer_bias_latency.m:1 header run_* suite driver,suite/host,35261
+run_current_observer_ideal.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_current_observer_ideal.m:1 header run_* suite driver,suite/host,22278
+run_current_observer_noise.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_current_observer_noise.m:1 header run_* suite driver,suite/host,28014
+run_depth_gamma_coupled_plant_id.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_depth_gamma_coupled_plant_id.m:1 header run_* suite driver,suite/host,35927
+run_depth_gamma_speed_scheduled_id_extension.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_depth_gamma_speed_scheduled_id_extension.m:1 header run_* suite driver,suite/host,50075
+run_depth_gamma_structural_attempt3.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_depth_gamma_structural_attempt3.m:1 header run_* suite driver,suite/host,66499
+run_depth_gamma_structural_blocker_fix.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_depth_gamma_structural_blocker_fix.m:1 header run_* suite driver,suite/host,63660
+run_depth_gamma_structural_gate.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_depth_gamma_structural_gate.m:1 header run_* suite driver,suite/host,57421
+run_depth_ndo_candidate.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_depth_ndo_candidate.m:1 header run_* suite driver,suite/host,76266
+run_depth_outer_baseline.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_depth_outer_baseline.m:1 header run_* suite driver,suite/host,57988
+run_depth_to_gamma_candidate.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_depth_to_gamma_candidate.m:1 header run_* suite driver,suite/host,73250
+run_elevator_pulse_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_elevator_pulse_audit.m:1 header run_* suite driver,suite/host,25311
+run_gamma_indi_scaffold.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gamma_indi_scaffold.m:1 header run_* suite driver,suite/host,27188
+run_gate7_fdir_acceptance_criterion_repair.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate7_fdir_acceptance_criterion_repair.m:1 header run_* suite driver,Gate7,92171
+run_gate7_mission_manager_fail_silent_sim.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate7_mission_manager_fail_silent_sim.m:1 header run_* suite driver,Gate7,81992
+run_gate8_actuator_order_scan_repair.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_actuator_order_scan_repair.m:1 header run_* suite driver,Gate8,121098
+run_gate8_frozen_cell_plant_seam_closure.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_frozen_cell_plant_seam_closure.m:1 header run_* suite driver,Gate8,75675
+run_gate8_monte_carlo_independent_priors.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_monte_carlo_independent_priors.m:1 header run_* suite driver,Gate8,77885
+run_gate8_r10_closed_loop_rail_origin_localisation.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_r10_closed_loop_rail_origin_localisation.m:1 header run_* suite driver,Gate8,100308
+run_gate8_r10_guidance_course_reference_offset_identification.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_r10_guidance_course_reference_offset_identification.m:1 header run_* suite driver,Gate8,75782
+run_gate8_r10_guidance_signal_log_closure.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_r10_guidance_signal_log_closure.m:1 header run_* suite driver,Gate8,85338
+run_gate8_r10_rail_aware_yaw_feasibility_envelope.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_r10_rail_aware_yaw_feasibility_envelope.m:1 header run_* suite driver,Gate8,73155
+run_gate8_r10_shadow_course_reference_offset_probe.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_r10_shadow_course_reference_offset_probe.m:1 header run_* suite driver,Gate8,45364
+run_gate8_r10_yaw_authority_coordinated_shadow_sweep.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_r10_yaw_authority_coordinated_shadow_sweep.m:1 header run_* suite driver,Gate8,74426
+run_gate8_r10_yaw_term_dimensional_consistency_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate8_r10_yaw_term_dimensional_consistency_audit.m:1 header run_* suite driver,Gate8,36351
+run_gate9_simulation_rc_assessment.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_gate9_simulation_rc_assessment.m:1 header run_* suite driver,Gate9,86244
+run_guidance_mission_baseline.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_guidance_mission_baseline.m:1 header run_* suite driver,Gate7,59032
+run_guidance_transition_shaper.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_guidance_transition_shaper.m:1 header run_* suite driver,suite/host,60537
+run_helix_r10_yaw_pitch_envelope.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_helix_r10_yaw_pitch_envelope.m:1 header run_* suite driver,suite/host,34848
+run_helix_r75_yaw_pitch_track.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_helix_r75_yaw_pitch_track.m:1 header run_* suite driver,suite/host,26913
+run_helix_r8_yaw_pitch_envelope.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_helix_r8_yaw_pitch_envelope.m:1 header run_* suite driver,suite/host,29452
+run_helix_yaw_pitch_track.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_helix_yaw_pitch_track.m:1 header run_* suite driver,suite/host,24368
+run_isolated_online_rudder_residual_monitor.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_isolated_online_rudder_residual_monitor.m:1 header run_* suite driver,Gate7,20263
+run_local_ss_climb.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_local_ss_climb.m:1 header run_* suite driver,suite/host,27656
+run_local_ss_level.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_local_ss_level.m:1 header run_* suite driver,suite/host,20649
+run_lqr_lqi_pitch_benchmark.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_lqr_lqi_pitch_benchmark.m:1 header run_* suite driver,suite/host,31420
+run_metric_rescore.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_metric_rescore.m:1 header run_* suite driver,suite/host,15794
+run_nav_availability_outage_stress.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_nav_availability_outage_stress.m:1 header run_* suite driver,Gate5,136165
+run_nav_availability_outage_validation.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_nav_availability_outage_validation.m:1 header run_* suite driver,Gate5,155821
+run_nav_multirate_ekf_baseline.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_nav_multirate_ekf_baseline.m:1 header run_* suite driver,Gate5,76131
+run_nav_multirate_ekf_baseline_repair.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_nav_multirate_ekf_baseline_repair.m:1 header run_* suite driver,Gate5,105179
+run_nav_multirate_sensor_chain.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_nav_multirate_sensor_chain.m:1 header run_* suite driver,Gate5,54788
+run_nav_multirate_sensor_chain_validation.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_nav_multirate_sensor_chain_validation.m:1 header run_* suite driver,Gate5,97106
+run_outer_gamma_adrc_scaffold.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_outer_gamma_adrc_scaffold.m:1 header run_* suite driver,suite/host,36074
+run_outer_gamma_indi_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_outer_gamma_indi_audit.m:1 header run_* suite driver,suite/host,32200
+run_outer_gamma_pi_scaffold.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_outer_gamma_pi_scaffold.m:1 header run_* suite driver,suite/host,32568
+run_path_suite.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_path_suite.m:1 header run_* suite driver,suite/host,15775
+run_pitch_climb_ff_regression.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_climb_ff_regression.m:1 header run_* suite driver,suite/host,18835
+run_pitch_flightpath_semantics_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_flightpath_semantics_audit.m:1 header run_* suite driver,suite/host,38480
+run_pitch_x_track.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_x_track.m:1 header run_* suite driver,suite/host,15969
+run_pitch_xz_bumpless_de_init.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_xz_bumpless_de_init.m:1 header run_* suite driver,suite/host,15468
+run_pitch_xz_climb_trim_ff.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_xz_climb_trim_ff.m:1 header run_* suite driver,suite/host,18732
+run_pitch_xz_internal_attrib.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_xz_internal_attrib.m:1 header run_* suite driver,suite/host,26788
+run_pitch_xz_track.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_xz_track.m:1 header run_* suite driver,suite/host,20084
+run_pitch_xz_warmstart_i.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_xz_warmstart_i.m:1 header run_* suite driver,suite/host,19796
+run_pitch_xz_window_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_xz_window_audit.m:1 header run_* suite driver,suite/host,22767
+run_pitch_yaw_closure.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_yaw_closure.m:1 header run_* suite driver,suite/host,30787
+run_pitch_yaw_final_closure.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_pitch_yaw_final_closure.m:1 header run_* suite driver,suite/host,43412
+run_propulsion_power_compute_baseline.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_propulsion_power_compute_baseline.m:1 header run_* suite driver,suite/host,83523
+run_propulsion_power_compute_parity_fix.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_propulsion_power_compute_parity_fix.m:1 header run_* suite driver,suite/host,83173
+run_r75_yaw_internal_attrib.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_r75_yaw_internal_attrib.m:1 header run_* suite driver,suite/host,28353
+run_real_time_power_integrity_contract.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_real_time_power_integrity_contract.m:1 header run_* suite driver,suite/host,75693
+run_roll_baseline_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_roll_baseline_audit.m:1 header run_* suite driver,suite/host,49075
+run_roll_production_closure.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_roll_production_closure.m:1 header run_* suite driver,suite/host,33114
+run_roll_trim_relative_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_roll_trim_relative_audit.m:1 header run_* suite driver,suite/host,37432
+run_rudder_cusum_detector.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_rudder_cusum_detector.m:1 header run_* suite driver,Gate7,40097
+run_rudder_fault_baseline.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_rudder_fault_baseline.m:1 header run_* suite driver,Gate7,39394
+run_rudder_fault_mag_speed_coverage.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_rudder_fault_mag_speed_coverage.m:1 header run_* suite driver,Gate7,44317
+run_rudder_monitor_noise_delay_stress.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_rudder_monitor_noise_delay_stress.m:1 header run_* suite driver,Gate7,30316
+run_rudder_residual_detector_feasibility.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_rudder_residual_detector_feasibility.m:1 header run_* suite driver,Gate7,28252
+run_sensor_noise_current_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_sensor_noise_current_audit.m:1 header run_* suite driver,suite/host,32864
+run_speed_aware_roll_coupling_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_speed_aware_roll_coupling_audit.m:1 header run_* suite driver,suite/host,40330
+run_speed_baseline_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_speed_baseline_audit.m:1 header run_* suite driver,suite/host,47252
+run_speed_envelope_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_speed_envelope_audit.m:1 header run_* suite driver,suite/host,49656
+run_speed_pi_ff_benchmark.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_speed_pi_ff_benchmark.m:1 header run_* suite driver,suite/host,47333
+run_ss_validation.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_ss_validation.m:1 header run_* suite driver,suite/host,24628
+run_thrust_trim_u15_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_thrust_trim_u15_audit.m:1 header run_* suite driver,suite/host,35038
+run_trim_alpha_ff_benchmark.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_trim_alpha_ff_benchmark.m:1 header run_* suite driver,suite/host,55981
+run_trim_alpha_ff_rate_limit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_trim_alpha_ff_rate_limit.m:1 header run_* suite driver,suite/host,58101
+run_trim_alpha_schedule_id.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_trim_alpha_schedule_id.m:1 header run_* suite driver,suite/host,31706
+run_trim_alpha_transient_gate_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_trim_alpha_transient_gate_audit.m:1 header run_* suite driver,suite/host,51960
+run_trim_alpha_two_repeat_closure.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_trim_alpha_two_repeat_closure.m:1 header run_* suite driver,suite/host,64052
+run_trim_operating_points.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_trim_operating_points.m:1 header run_* suite driver,suite/host,31191
+run_tur12_stage.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_tur12_stage.m:1 header run_* suite driver,suite/host,1545
+run_tur3_stage.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_tur3_stage.m:1 header run_* suite driver,suite/host,7306
+run_tur4a.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_tur4a.m:1 header run_* suite driver,suite/host,12812
+run_tur5a.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_tur5a.m:1 header run_* suite driver,suite/host,14610
+run_tur5b.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_tur5b.m:1 header run_* suite driver,suite/host,25911
+run_vertical_audit.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_vertical_audit.m:1 header run_* suite driver,suite/host,26925
+run_water_current_admission_governor.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_water_current_admission_governor.m:1 header run_* suite driver,Gate7,23220
+run_water_current_admission_governor_rerun.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_water_current_admission_governor_rerun.m:1 header run_* suite driver,Gate7,565
+run_water_current_arc_governor.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_water_current_arc_governor.m:1 header run_* suite driver,suite/host,18562
+run_water_current_feasibility_map.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_water_current_feasibility_map.m:1 header run_* suite driver,suite/host,19316
+run_water_current_reference_governor.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_water_current_reference_governor.m:1 header run_* suite driver,suite/host,22028
+run_yaw_r75_radial_diag.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_yaw_r75_radial_diag.m:1 header run_* suite driver,suite/host,39723
+run_yaw_roll_damping_backoff.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_yaw_roll_damping_backoff.m:1 header run_* suite driver,suite/host,37759
+run_yaw_roll_damping_benchmark.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,run_yaw_roll_damping_benchmark.m:1 header run_* suite driver,suite/host,34801
+simulate_open_loop_constant_input.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,helper,HOST_ONLY,simulate_open_loop_constant_input.m:1 header/call inventory,CG0,2008
+test_circle.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_circle.m:1 test harness,suite/host,1864
+test_elevator_sign.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_elevator_sign.m:1 test harness,suite/host,2296
+test_helix.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_helix.m:1 test harness,suite/host,1989
+test_open_loop_elevator.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_open_loop_elevator.m:1 test harness,suite/host,1733
+test_open_loop_thrust.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_open_loop_thrust.m:1 test harness,suite/host,1839
+test_pitch_control.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_pitch_control.m:1 test harness,suite/host,1735
+test_pitch_hold.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_pitch_hold.m:1 test harness,suite/host,3159
+test_pitch_sign_authority.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_pitch_sign_authority.m:1 test harness,suite/host,2022
+test_pitch_step.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_pitch_step.m:1 test harness,suite/host,1803
+test_single_pitch_candidate.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_single_pitch_candidate.m:1 test harness,suite/host,1640
+test_speed_control.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_speed_control.m:1 test harness,suite/host,1274
+test_straight_line.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_straight_line.m:1 test harness,suite/host,1869
+test_trim_and_linearization.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_trim_and_linearization.m:1 test harness,suite/host,3696
+test_xz_line.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_xz_line.m:1 test harness,suite/host,2721
+test_yaw_control.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,test_yaw_control.m:1 test harness,suite/host,1736
+underwater777_vehicle_dynamics.m,SIMULATION_ONLY,FULLY_REVIEWED,helper,HOST_ONLY_PLANT,"underwater777_vehicle_dynamics.m:1,13-24,93-95; called cpt:101",Gate9B/CG0,6065
+underwater777_vehicle_dynamics_current.m,ARCHIVE_REJECTED,NEEDS_CG1_REVIEW,helper,REJECTED_NO_CODEGEN,underwater777_vehicle_dynamics_current.m:1 isolated current plant,CG0_archive,7814
+underwater777_vehicle_simulation.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,entry,HOST_ONLY,underwater777_vehicle_simulation.m:1 header/call inventory,CG0,1899
+verify_tur25_trim.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,verify_tur25_trim.m:1 header/call inventory,CG0,4985
+verify_tur3_muw.m,SIMULATION_ONLY,NEEDS_CG1_REVIEW,caller,HOST_ONLY,verify_tur3_muw.m:1 header/call inventory,CG0,16768
