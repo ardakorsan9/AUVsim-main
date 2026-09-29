@@ -1,6 +1,6 @@
-# Autonomous Underwater Vehicle (AUV) - MATLAB + STM32
+# Autonomous Underwater Vehicle (AUV) — MATLAB + STM32
 
-This repo is split into two clear top-level areas:
+Student / prototype AUV stack: **MATLAB closed-loop path following in simulation**, plus **STM32F411 hardware bring-up (WIP)**.
 
 | Folder | Contents |
 |---|---|
@@ -20,10 +20,52 @@ This repo is split into two clear top-level areas:
 cd('.../AUVsim-main')   % repo root
 setup_auv_path          % adds matlab/* to the path
 underwater777_vehicle_simulation
-% or: test_helix / test_straight_line
+% or: test_helix / test_straight_line / test_circle
 ```
 
-MATLAB subfolders: [`matlab/README.md`](matlab/README.md)
+In MATLAB the vehicle **does** closed-loop path tracking (guidance → controller → 6-DOF dynamics). That is the working reference. Hardware autonomy in water is still early.
+
+More layout detail: [`matlab/README.md`](matlab/README.md)
+
+---
+
+## The hard problem: no GPS underwater
+
+**Depth is the easy axis. Horizontal position is the hard one.**
+
+| Quantity | Simulation | Real vehicle underwater |
+|---|---|---|
+| Depth `z` | Known exactly | Measurable via **pressure** (cheap or waterproof sensor) |
+| Attitude | Known exactly | MPU6050 (IMU) — usable with calibration |
+| Horizontal `x,y` | Known exactly | **No GPS.** This is the main unsolved problem |
+
+Underwater GNSS does not work. Without a DVL (Doppler velocity log, expensive) or acoustic positioning, the vehicle must rely on **dead reckoning**: integrate speed / thrust / IMU over time. Drift grows. So the real autonomy bottleneck is **“where am I in the horizontal plane?”**, not depth hold.
+
+Practical near-term approach: calibrate open-loop / dead-reckoning runs in a pool, accept limited accuracy, then optionally add ranging (sonar) or later a DVL if budget allows.
+
+---
+
+## Depth sensing (cheap vs proper)
+
+Depth control on the real vehicle uses **water pressure → depth**. Two options:
+
+### Option A — Cheap / DIY (balloon + external tube)
+
+- Keep a **cheap pressure sensor** (e.g. MPS20N0040D + HX710) **inside** the dry hull.
+- Route a thin **tube / pipe to the outside**, ending in a small **air balloon / bladder** exposed to water pressure (or an open water column that compresses the air).
+- Outside water pressure compresses the air; the internal sensor reads that pressure → estimate depth → **closed-loop depth / pitch control**.
+
+This is a **low-cost, simple** student solution. Care needed for leaks, air leaks in the tube, temperature, and calibration. Fine for pool depths; not a survey-grade sensor.
+
+### Option B — Direct underwater pressure sensor
+
+- Buy a **waterproof / submersible pressure (depth) sensor** rated for the target depth.
+- Mount it with a sealed penetrator; read depth more directly and robustly.
+- Better reliability and less plumbing; higher cost than Option A.
+
+**Either way, depth closed-loop is achievable.** Horizontal navigation without GPS remains the harder open problem (see above).
+
+Current bench wiring in this project assumes the cheap pressure chain (MPS20 + HX710 on PB12/PB13). A waterproof sensor can replace that chain later with the same “pressure → depth → elevator” control idea.
 
 ---
 
@@ -34,25 +76,23 @@ Target platform: small **single-propeller** AUV with **two servos** (rudder + el
 | Feature | Description |
 |---|---|
 | Propulsion | A2212 ~930 KV + ESC 30A (bidirectional) |
-| Yaw / pitch | 2x MG996R (PB4 / PB5) |
-| Depth | MPS20N0040D + HX710 |
+| Yaw / pitch | 2× MG996R (PB4 / PB5) |
+| Depth | Pressure → depth (DIY balloon/tube **or** underwater pressure sensor) |
 | Attitude | MPU6050 |
 | Leak | Leak / rain AO |
 | Brain | STM32F411 BlackPill |
-| Power | 3S LiPo -> fuse -> ESC + UBEC 5V (servos) |
+| Power | 3S LiPo → fuse → ESC + UBEC 5V (servos) |
 | Bench | CP2102 UART, ST-Link SWD |
-
-In simulation, x,y,z are fully known. On hardware **z ~ pressure**; horizontal distance uses calibrated dead reckoning (no GPS underwater).
 
 ---
 
 ## 2. Electronics (summary)
 
-STM32F411, ST-Link, CP2102, MPU6050, MPS20, leak, 2x servo, motor, ESC, UBEC, 3S LiPo, XT60, fuse, 470 uF / 100 nF / resistors, stripboard.
+STM32F411, ST-Link, CP2102, MPU6050, pressure chain (cheap MPS20 or later waterproof), leak, 2× servo, motor, ESC, UBEC, 3S LiPo, XT60, fuse, 470 µF / 100 nF / resistors, stripboard.
 
 ESC BEC 5V is **not connected**. Servos use **UBEC 5V**.
 
-Pin summary: ESC PB0 · servo PB4/PB5 · I2C PB6/PB7 · pressure PB12/PB13 · leak PA5 · UART PA9/PA10.
+Pin summary (current bench): ESC PB0 · servo PB4/PB5 · I2C PB6/PB7 · pressure PB12/PB13 · leak PA5 · UART PA9/PA10.
 
 ---
 
@@ -64,7 +104,9 @@ stm32/
   embedded/    <- CubeMX + App + Src + generated
 ```
 
-Maturity: bench + bringup **medium**; closed-loop in water **early**.  
+Maturity: bench + bringup **medium**; closed-loop path follow in water **early**.  
+Next hardware steps: reliable depth from pressure, then attitude hold, then limited dead-reckoning missions — remembering that **no GPS** limits horizontal accuracy.
+
 Details: [stm32/README.md](stm32/README.md)
 
 ---
@@ -73,14 +115,14 @@ Details: [stm32/README.md](stm32/README.md)
 
 ```
 AUVsim-main/
-|-- README.md                 <- you are here
-|-- setup_auv_path.m          <- MATLAB path helper
+|-- README.md
+|-- setup_auv_path.m
 |-- matlab/
-|   |-- core/                 <- main simulation
+|   |-- core/                 <- main simulation (path following works here)
 |   |-- tests/
 |   |-- path_plot/
 |   |-- codegen/
-|   |-- experiments/          <- run_* experiments (advanced)
+|   |-- experiments/
 |-- stm32/
 |   |-- bench/
 |   |-- embedded/
@@ -94,4 +136,4 @@ AUVsim-main/
 
 ## License / safety
 
-Student prototype. Propeller-off bench tests; observe LiPo safety.
+Student prototype. Propeller-off bench tests; observe LiPo safety. Seal and pressure plumbing carefully before any water test.
