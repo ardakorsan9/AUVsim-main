@@ -1,58 +1,58 @@
-# Otonom Sualtı Aracı (AUV) — MATLAB + STM32
+# Autonomous Underwater Vehicle (AUV) - MATLAB + STM32
 
-Bu depo **anlaşılır iki ana klasöre** ayrılmıştır:
+This repo is split into two clear top-level areas:
 
-| Klasör | İçerik |
+| Folder | Contents |
 |---|---|
-| [`matlab/`](matlab/) | Simülasyon, yol takibi, PID / guidance / dinamik |
-| [`stm32/`](stm32/) | Tezgah sketch’leri + gömülü iskelet (**WIP**) |
-| [`docs/`](docs/) | PDF ve durum belgeleri |
-| [`tools/`](tools/) | Codegen / doğrulama yardımcıları |
+| [`matlab/`](matlab/) | Simulation, path following, PID / guidance / dynamics |
+| [`stm32/`](stm32/) | Bench sketches + embedded skeleton (**WIP**) |
+| [`docs/`](docs/) | PDF and status docs |
+| [`tools/`](tools/) | Codegen / validation helpers |
 
-**PDF:** [docs/sualti.pdf](docs/sualti.pdf)  
-**STM WIP durumu:** [docs/STM32_GELISTIRME_DURUMU.md](docs/STM32_GELISTIRME_DURUMU.md)
+**PDF:** [docs/underwater.pdf](docs/underwater.pdf)  
+**STM WIP status:** [docs/STM32_DEVELOPMENT_STATUS.md](docs/STM32_DEVELOPMENT_STATUS.md)
 
 ---
 
-## Hızlı başlangıç (MATLAB)
+## Quick start (MATLAB)
 
 ```matlab
-cd('.../AUVsim-main')   % repo kökü
-setup_auv_path          % matlab/* path'e eklenir
+cd('.../AUVsim-main')   % repo root
+setup_auv_path          % adds matlab/* to the path
 underwater777_vehicle_simulation
-% veya: test_helix / test_straight_line
+% or: test_helix / test_straight_line
 ```
 
-MATLAB alt klasörleri: [`matlab/README.md`](matlab/README.md)
+MATLAB subfolders: [`matlab/README.md`](matlab/README.md)
 
 ---
 
-## 1. Araç nasıl bir şey?
+## 1. What is the vehicle?
 
-Hedef platform: **tek pervaneli**, **iki servo** (dümen + elevator) küçük AUV.
+Target platform: small **single-propeller** AUV with **two servos** (rudder + elevator).
 
-| Özellik | Açıklama |
+| Feature | Description |
 |---|---|
-| İtki | A2212 ~930 KV + ESC 30A (çift yön) |
-| Yön / pitch | 2× MG996R (PB4 / PB5) |
-| Derinlik | MPS20N0040D + HX710 |
-| Tutum | MPU6050 |
-| Sızıntı | Leak / yağmur AO |
-| Beyin | STM32F411 BlackPill |
-| Enerji | 3S LiPo → sigorta → ESC + UBEC 5V (servo) |
-| Tezgah | CP2102 UART, ST-Link SWD |
+| Propulsion | A2212 ~930 KV + ESC 30A (bidirectional) |
+| Yaw / pitch | 2x MG996R (PB4 / PB5) |
+| Depth | MPS20N0040D + HX710 |
+| Attitude | MPU6050 |
+| Leak | Leak / rain AO |
+| Brain | STM32F411 BlackPill |
+| Power | 3S LiPo -> fuse -> ESC + UBEC 5V (servos) |
+| Bench | CP2102 UART, ST-Link SWD |
 
-Simülasyonda x,y,z tam bilinir. Donanımda **z ≈ basınç**; yatay mesafe kalibrasyonlu ölü reckoning (sualtında GPS yok).
+In simulation, x,y,z are fully known. On hardware **z ~ pressure**; horizontal distance uses calibrated dead reckoning (no GPS underwater).
 
 ---
 
-## 2. Elektronik (özet)
+## 2. Electronics (summary)
 
-STM32F411, ST-Link, CP2102, MPU6050, MPS20, leak, 2× servo, motor, ESC, UBEC, 3S LiPo, XT60, sigorta, 470 µF / 100 nF / dirençler, pertinaks.
+STM32F411, ST-Link, CP2102, MPU6050, MPS20, leak, 2x servo, motor, ESC, UBEC, 3S LiPo, XT60, fuse, 470 uF / 100 nF / resistors, stripboard.
 
-ESC BEC 5V **bağlanmaz**. Servo **UBEC 5V**.
+ESC BEC 5V is **not connected**. Servos use **UBEC 5V**.
 
-Pin özeti: ESC PB0 · servo PB4/PB5 · I2C PB6/PB7 · basınç PB12/PB13 · leak PA5 · UART PA9/PA10.
+Pin summary: ESC PB0 · servo PB4/PB5 · I2C PB6/PB7 · pressure PB12/PB13 · leak PA5 · UART PA9/PA10.
 
 ---
 
@@ -60,38 +60,38 @@ Pin özeti: ESC PB0 · servo PB4/PB5 · I2C PB6/PB7 · basınç PB12/PB13 · lea
 
 ```
 stm32/
-  tezgah/     ← 01_blink ... 17_goto_222
-  gomulu/     ← CubeMX + App + Src + generated
+  bench/       <- 01_blink ... 17_goto_222
+  embedded/    <- CubeMX + App + Src + generated
 ```
 
-Seviye: tezgah + bringup **orta**; suda kapalı çevrim **erken**.  
-Ayrıntı: [stm32/README.md](stm32/README.md)
+Maturity: bench + bringup **medium**; closed-loop in water **early**.  
+Details: [stm32/README.md](stm32/README.md)
 
 ---
 
-## 4. Depo haritası
+## 4. Repository map
 
 ```
 AUVsim-main/
-├── README.md                 ← buradasınız
-├── setup_auv_path.m          ← MATLAB path
-├── matlab/
-│   ├── cekirdek/             ← asıl simülasyon
-│   ├── testler/
-│   ├── yol_ve_cizim/
-│   ├── codegen/
-│   └── deneyler/             ← run_* denemeleri (ileri seviye)
-├── stm32/
-│   ├── tezgah/
-│   └── gomulu/
-├── docs/
-│   ├── sualti.pdf
-│   └── STM32_GELISTIRME_DURUMU.md
-└── tools/
+|-- README.md                 <- you are here
+|-- setup_auv_path.m          <- MATLAB path helper
+|-- matlab/
+|   |-- core/                 <- main simulation
+|   |-- tests/
+|   |-- path_plot/
+|   |-- codegen/
+|   |-- experiments/          <- run_* experiments (advanced)
+|-- stm32/
+|   |-- bench/
+|   |-- embedded/
+|-- docs/
+|   |-- underwater.pdf
+|   |-- STM32_DEVELOPMENT_STATUS.md
+|-- tools/
 ```
 
 ---
 
-## Lisans / güvenlik
+## License / safety
 
-Öğrenci prototipi. Tezgahta pervanesiz test; LiPo güvenliği.
+Student prototype. Propeller-off bench tests; observe LiPo safety.

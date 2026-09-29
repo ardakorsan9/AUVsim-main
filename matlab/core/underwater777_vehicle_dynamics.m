@@ -34,17 +34,17 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
     q     = g(11);
     r     = g(12);
 
-    % DEBUG: State girişini kontrol et
+    % DEBUG: Check state input
     if any(~isfinite(g))
         error('State vector g contains NaN/Inf');
     end
 
-    % Euler singularity guard - sıkılaştırılmış
+    % Euler singularity guard - tightened
     if abs(cos(theta)) < 1e-3
         error('Euler singularity risk: theta = %.3f deg', rad2deg(theta));
     end
 
-    % DEBUG: Rotasyon matrisi öncesi açıları kontrol et
+    % DEBUG: Check angles before rotation matrix
     if ~isfinite(phi) || ~isfinite(theta) || ~isfinite(psi)
         error('Angles contain NaN/Inf: phi=%.6f, theta=%.6f, psi=%.6f', phi, theta, psi);
     end
@@ -64,7 +64,7 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
 
     pos_dot = R * [u; v; w];
 
-    % DEBUG: R ve pos_dot sonrası kontrol
+    % DEBUG: Check R and pos_dot
     if any(~isfinite(R), 'all')
         error('Rotation matrix R contains NaN/Inf');
     end
@@ -80,7 +80,7 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
 
     ang_dot = JJ * [p; q; r];
 
-    % DEBUG: JJ ve ang_dot sonrası kontrol
+    % DEBUG: Check JJ and ang_dot
     if any(~isfinite(JJ), 'all')
         error('JJ contains NaN/Inf');
     end
@@ -105,7 +105,7 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
         - m*zg*p*r ...
         + Xprop;
 
-    % DEBUG: X kontrolü
+    % DEBUG: Check X
     if ~isfinite(X), error('X is NaN/Inf'); end
 
     Y = (W-B)*cos(theta)*sin(phi) ...
@@ -118,7 +118,7 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
         + (Ypq - m*xg)*p*q ...
         + Yuudr*u^2*delta_r;
 
-    % DEBUG: Y kontrolü
+    % DEBUG: Check Y
     if ~isfinite(Y), error('Y is NaN/Inf'); end
 
     Z = (W-B)*cos(theta)*cos(phi) ...
@@ -132,7 +132,7 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
         + (Zrp - m*xg)*r*p ...
         + Zuuds*u^2*delta_e;
 
-    % DEBUG: Z kontrolü
+    % DEBUG: Check Z
     if ~isfinite(Z), error('Z is NaN/Inf'); end
 
     K = (yg*W-yb*B)*cos(theta)*cos(phi) ...
@@ -142,7 +142,7 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
         - (m*zg)*w*p ...
         + (m*zg)*u*r;
 
-    % DEBUG: K kontrolü
+    % DEBUG: Check K
     if ~isfinite(K), error('K is NaN/Inf'); end
 
     M = -(zg*W-zb*B)*sin(theta) ...
@@ -166,7 +166,7 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
         diag_last_M_total = M;
     end
 
-    % DEBUG: M kontrolü
+    % DEBUG: Check M
     if ~isfinite(M), error('M is NaN/Inf'); end
 
     N = (xg*W-xb*B)*cos(theta)*sin(phi) ...
@@ -179,7 +179,7 @@ function g_dot = underwater777_vehicle_dynamics(t, g, controls)
         + (Nur - m*xg)*u*r ...
         + Nuudr*u^2*delta_r;
 
-    % DEBUG: N kontrolü
+    % DEBUG: Check N
     if ~isfinite(N), error('N is NaN/Inf'); end
 
     % Mass / added-mass matrix

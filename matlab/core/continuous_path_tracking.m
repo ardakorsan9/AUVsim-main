@@ -180,7 +180,7 @@ function [vehicle_path, times, velocities, angular_velocities, orientations, tot
         times(idx) = total_time;
 
         if mod(idx, 100) == 0 || idx == n_steps
-            fprintf('Simülasyon adımı: %d/%d, toplam süre = %.2f s, u=%.2f m/s, yaw=%.2f deg, pitch=%.2f deg\n', ...
+            fprintf('Simulation step: %d/%d, total time = %.2f s, u=%.2f m/s, yaw=%.2f deg, pitch=%.2f deg\n', ...
                 idx, n_steps, total_time, current_u, rad2deg(current_orientation(3)), rad2deg(current_orientation(2)));
         end
     end

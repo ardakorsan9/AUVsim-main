@@ -142,7 +142,7 @@ end
 
 function dc = analyze_double_count()
     % Static audit of underwater777_vehicle_dynamics pitch-moment terms
-    dyn_path = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'cekirdek', 'underwater777_vehicle_dynamics.m');
+    dyn_path = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'core', 'underwater777_vehicle_dynamics.m');
     txt = fileread(dyn_path);
     % Count explicit Muw*u*w occurrences in force/moment assembly
     n_muw = numel(regexp(txt, 'Muw\s*\*\s*u\s*\*\s*w'));
