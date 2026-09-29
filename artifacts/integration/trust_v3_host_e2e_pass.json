@@ -1,0 +1,14 @@
+{
+  "pass": true,
+  "sample_count": 16,
+  "tick_ms": 25,
+  "modules_linked": [
+    "auv_runtime_port",
+    "auv_runtime_adapter",
+    "auv_runtime_codegen_init",
+    "auv_safety_fsm",
+    "auv_pwm_mapper",
+    "auv_telemetry",
+    "auv_watchdog_policy"
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "work_order_id": "WO-20260905-0056",
+  "project_id": "auv_v1",
+  "target": "stm32f411",
+  "direct_flash_readiness_percent": 70,
+  "scoring": {
+    "max_points": 100,
+    "categories": [
+      {
+        "name": "target_build_and_elf",
+        "weight": 25,
+        "score": 25,
+        "evidence_paths": [
+          "firmware/stm32f411/cubemx/CMakeLists.txt",
+          "artifacts/firmware/auv_f411_size_budget.json"
+        ],
+        "missing_evidence": []
+      },
+      {
+        "name": "generated_runtime_abi_plus_runtime_port_linkage",
+        "weight": 20,
+        "score": 20,
+        "evidence_paths": [
+          "firmware/stm32f411/Inc/auv_runtime_port.h",
+          "firmware/stm32f411/Src/auv_runtime_port.cpp",
+          "firmware/stm32f411/generated/runtime/combined/auv_runtime_codegen_init.h",
+          "firmware/stm32f411/generated/runtime/combined/auv_runtime_codegen_init.cpp",
+          "firmware/stm32f411/host_integration/CMakeLists.txt",
+          "artifacts/integration/trust_v3_host_e2e_pass.json"
+        ],
+        "missing_evidence": []
+      },
+      {
+        "name": "host_safety_and_end_to_end_evidence",
+        "weight": 15,
+        "score": 15,
+        "evidence_paths": [
+          "firmware/stm32f411/host_tests/CMakeLists.txt",
+          "firmware/stm32f411/host_tests/test_pure_logic.cpp",
+          "firmware/stm32f411/host_integration/test_host_e2e_chain.cpp",
+          "artifacts/integration/trust_v3_host_e2e_pass.json",
+          "artifacts/parity/combined_parity_pass.json",
+          "artifacts/parity/trust_v1/trust_v1_parity_pass.json"
+        ],
+        "missing_evidence": []
+      },
+      {
+        "name": "flash_ram_budget",
+        "weight": 10,
+        "score": 10,
+        "evidence_paths": [
+          "artifacts/firmware/auv_f411_size_budget.json"
+        ],
+        "missing_evidence": []
+      },
+      {
+        "name": "physical_flash_boot_uart_pwm_evidence",
+        "weight": 20,
+        "score": 0,
+        "evidence_paths": [],
+        "missing_evidence": [
+          "No allowlisted artifact proving on-device flash, boot, UART, or PWM physical validation."
+        ]
+      },
+      {
+        "name": "physical_arm_kill_iwdg_fault_telemetry_evidence",
+        "weight": 10,
+        "score": 0,
+        "evidence_paths": [],
+        "missing_evidence": [
+          "No allowlisted artifact proving physical arm/kill, IWDG, fault, and telemetry hardware validation."
+        ]
+      }
+    ]
+  },
+  "build_ready": true,
+  "flash_ready": false,
+  "field_ready": false,
+  "approved": false,
+  "certified": false
+}
