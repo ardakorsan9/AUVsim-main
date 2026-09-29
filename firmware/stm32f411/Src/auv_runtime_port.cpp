@@ -6,15 +6,15 @@
 
 #include "auv_runtime_port.h"
 
-#include "auv_runtime_codegen_reset_initialize.h"
-#include "auv_runtime_codegen_reset.h"
-#include "auv_runtime_codegen_step.h"
+#include "auv_runtime_codegen_init.h"
 
 #include <string.h>
 
 namespace {
 
-struct6_T s_state;
+struct0_T s_config;
+struct5_T s_params;
+struct9_T s_state;
 bool s_initialized;
 
 void zero_output(AuvRuntimeOut *out)
@@ -27,10 +27,16 @@ void zero_output(AuvRuntimeOut *out)
 
 }  // namespace
 
-void auv_runtime_port_initialize(void)
+void auv_runtime_port_initialize(const AuvRuntimeConfig *cfg)
 {
-    auv_runtime_codegen_reset_initialize();
-    auv_runtime_codegen_reset(&s_state);
+    if (cfg == 0) {
+        s_initialized = false;
+        return;
+    }
+    memcpy(&s_config, cfg, sizeof(s_config));
+    auv_runtime_codegen_init_initialize();
+    auv_runtime_codegen_init(&s_config, &s_params);
+    auv_runtime_codegen_reset(&s_params, &s_state);
     s_initialized = true;
 }
 
@@ -39,7 +45,7 @@ void auv_runtime_port_reset(void)
     if (!s_initialized) {
         return;
     }
-    auv_runtime_codegen_reset(&s_state);
+    auv_runtime_codegen_reset(&s_params, &s_state);
 }
 
 bool auv_runtime_port_publish_allowed(const AuvRuntimeOut *out)
@@ -71,7 +77,7 @@ bool auv_runtime_port_step(const AuvRuntimeIn *in, AuvRuntimeOut *out)
         zero_output(out);
         return false;
     }
-    auv_runtime_codegen_step(&s_state, in, out);
+    auv_runtime_codegen_step(&s_params, &s_state, in, out);
     if (!auv_runtime_port_publish_allowed(out)) {
         return false;
     }
