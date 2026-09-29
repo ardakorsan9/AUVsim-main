@@ -5,6 +5,8 @@
 # Firmware local build trees (sources stay tracked)
 firmware/**/build/
 firmware/**/build-gcc/
+stm32/**/build/
+stm32/**/build-gcc/
 *.elf
 *.map
 !.gitignore
@@ -14,6 +16,9 @@ slprj/
 codegen/
 **/slprj/
 **/codegen/
+# Keep hand-written codegen wrappers under matlab/
+!matlab/codegen/
+!matlab/codegen/**
 *.slxc
 *.mexw64
 *.mex*

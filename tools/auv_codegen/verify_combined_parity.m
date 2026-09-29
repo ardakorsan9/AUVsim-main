@@ -25,7 +25,7 @@ function local_run_combined_parity()
     dt = 0.025;
 
     projRoot = local_project_root();
-    addpath(projRoot);
+    addpath(genpath(fullfile(projRoot, 'matlab')));
 
     artifactDir = fullfile(projRoot, 'artifacts', 'parity');
     tmpMexDir = fullfile(artifactDir, 'tmp', 'mex');
@@ -92,7 +92,7 @@ function local_run_trust_v1()
     longSequenceSteps = 320;
 
     projRoot = local_project_root();
-    addpath(projRoot);
+    addpath(genpath(fullfile(projRoot, 'matlab')));
 
     artifactDir = fullfile(projRoot, 'artifacts', 'parity', 'trust_v1');
     tmpMexDir = fullfile(artifactDir, 'tmp', 'mex');
@@ -462,7 +462,7 @@ function local_remove_stray_mex(projRoot)
 end
 
 function local_build_combined_mex(projRoot, outDir)
-    addpath(projRoot);
+    addpath(genpath(fullfile(projRoot, 'matlab')));
 
     cfg = local_example_cfg();
     params = auv_runtime_codegen_init(cfg);

@@ -7,7 +7,7 @@ function run_auv_v1_bounded_current()
 %   No PASS thresholds; certified=false.
 
     proj_root = pwd;
-    addpath(proj_root);
+    addpath(genpath(fullfile(proj_root, 'matlab')));
 
     artifact_dir = fullfile(proj_root, 'artifacts', 'robustness');
     if ~exist(artifact_dir, 'dir')
