@@ -25,7 +25,7 @@ function test_trim_and_linearization()
     fprintf('Final theta with pitch trim: %.3f deg\n', rad2deg(pitch_trim.theta_final));
     fprintf('Final q with pitch trim: %.3f deg/s\n', rad2deg(pitch_trim.q_final));
 
-    %% 3) Trim kalite kontrolü
+    %% 3) Trim quality check
     theta_ok = abs(pitch_trim.theta_final) < deg2rad(10);
     q_ok = abs(pitch_trim.q_final) < deg2rad(5);
 
@@ -64,7 +64,7 @@ function test_trim_and_linearization()
     fprintf('\n========== TEST COMPLETE ==========\n');
     fprintf('Trim Quality: %s\n', trim_quality);
 
-    %% 5) Jacobian sadece trim kabul edilebilirse
+    %% 5) Jacobian only if trim is acceptable
     if ~(theta_ok && q_ok)
         fprintf('\nNOTE: Jacobian skipped because trim is poor.\n');
         fprintf('First improve trim, then compute linearization.\n');
@@ -73,7 +73,7 @@ function test_trim_and_linearization()
 
     fprintf('\n========== JACOBIAN LINEARIZATION ==========\n');
 
-    % Yaklaşık trim state seçimi
+    % Approximate trim state selection
     x0 = zeros(12,1);
     x0(5) = pitch_trim.theta_final;  % theta0
     x0(6) = pi/4;                    % psi0

@@ -1,26 +1,26 @@
-# STM32 — WIP (yarıya kadar, geliştirilecek)
+# STM32 — WIP (about halfway; still evolving)
 
-> Bitmiş uçuş yazılımı değil. Tezgah + gömülü iskelet.
+> Not finished flight software. Bench + embedded skeleton.
 
-## Klasörler (bakınca net)
+## Folders
 
-| Klasör | Ne |
+| Folder | What |
 |---|---|
-| **`tezgah/`** | Arduino-cli sketch’leri `01`…`17` — parça parça donanım testi |
-| **`gomulu/`** | Asıl STM32F411 projesi: CubeMX, App bringup, safety, PWM mapper, MATLAB codegen |
+| **`bench/`** | Arduino-cli sketches `01`…`17` — part-by-part hardware tests |
+| **`embedded/`** | Main STM32F411 project: CubeMX, App bringup, safety, PWM mapper, MATLAB codegen |
 
-## Olgunluk
+## Maturity
 
-- Tezgah: sensör/servo/ESC çalıştı  
-- Gömülü: disarm + PWM nötr + host testleri  
-- Kapalı çevrim otonom (suda): **henüz yok** → sıradaki iş  
+- Bench: sensors / servo / ESC exercised  
+- Embedded: disarm + PWM neutral + host tests  
+- Closed-loop autonomy (in water): **not yet** → next work  
 
-Detay: [`../docs/STM32_GELISTIRME_DURUMU.md`](../docs/STM32_GELISTIRME_DURUMU.md)
+Details: [`../docs/STM32_DEVELOPMENT_STATUS.md`](../docs/STM32_DEVELOPMENT_STATUS.md)
 
-## Geliştirme sırası
+## Development order
 
-1. `tezgah/17_goto_222` sensör sağlığı  
-2. `gomulu/cubemx` pinleri tezgahla kilitle  
-3. Sensörleri `gomulu` bringup’a taşı  
-4. Safety + PWM mapper’ı gerçek komutla besle  
-5. Havuzda derinlik → sonra birleşik görev  
+1. `bench/17_goto_222` sensor health  
+2. Lock `embedded/cubemx` pins to the bench  
+3. Move sensors into `embedded` bringup  
+4. Feed safety + PWM mapper with real commands  
+5. Pool depth hold → then combined mission  

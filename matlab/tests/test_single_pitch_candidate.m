@@ -1,10 +1,10 @@
 function test_single_pitch_candidate()
-% Tek bir pitch trim adayı test eder - debug için
-% delta_e = -2 deg, kısa süre
+% Test a single pitch trim candidate - for debugging
+% delta_e = -2 deg, short duration
 
     init_parameters();
 
-    % Önce speed trim bul
+    % Find speed trim first
     u_target = 2.0;
     dt = 0.05;
     T_speed = 20;
@@ -15,9 +15,9 @@ function test_single_pitch_candidate()
     fprintf('\n=== SINGLE PITCH CANDIDATE TEST ===\n');
     fprintf('Thrust trim = %.3f N\n', thrust_trim);
 
-    % Tek aday test et
+    % Test single candidate
     delta_e_deg = -2.0;
-    T_pitch = 2.0;  % kısa süre
+    T_pitch = 2.0;  % short duration
 
     limits.theta_max_deg = 70;
     limits.q_max_deg = 80;
@@ -46,7 +46,7 @@ function test_single_pitch_candidate()
         fprintf('ERROR in simulation: %s\n', ME.message);
         fprintf('Error ID: %s\n', ME.identifier);
 
-        % Stack trace göster
+        % Show stack trace
         for k = 1:length(ME.stack)
             fprintf('  %s (line %d)\n', ME.stack(k).name, ME.stack(k).line);
         end
