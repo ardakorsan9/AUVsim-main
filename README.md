@@ -109,13 +109,21 @@ Bu depodaki `firmware/stm32f411` ise **CubeMX + bringup + güvenlik FSM + PWM ma
 
 ---
 
-## 5. STM32 kod seviyesi (özet)
+## 5. STM32 kod seviyesi (WIP — yarıda, geliştirilecek)
 
-Ayrıntılı seviye değerlendirmesi commit notlarında ve proje durumuna göre güncellenir. Kısa hali:
+STM tarafı **bitmiş ürün gibi yüklenmedi**. Açıkça “geliştirme aşaması” olarak paylaşıldı:
 
-- **Simülasyon (MATLAB):** Yol takibi + PID doğrulanmış — **yüksek olgunluk**
-- **Gömülü bringup / tezgah:** PWM nötr, disarm, sensör/aktüatör tezgah testleri — **orta**
-- **Kapalı çevrim otonom (suda metre-metre path follow):** Sensör kalibrasyonu + gövde modeli uyumu gerekir — **erken / ön-otonom**
+- Durum: [docs/STM32_GELISTIRME_DURUMU.md](docs/STM32_GELISTIRME_DURUMU.md)
+- Firmware WIP rehberi: [firmware/README.md](firmware/README.md)
+- Tezgah sketch’leri: [firmware/bench_arduino/](firmware/bench_arduino/) (01…17)
+- Asıl iskelet: `firmware/stm32f411/` (bringup + safety + codegen; kapalı çevrim yok)
+
+| Katman | Seviye |
+|---|---|
+| MATLAB yol takibi + PID | Yüksek |
+| Tezgah (sensör/aktüatör) | Orta–yüksek |
+| `auv_f411` bringup | Orta (WIP) |
+| Suda kapalı çevrim / path follow | Erken — sıradaki iş |
 
 ---
 
