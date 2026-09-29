@@ -2,16 +2,16 @@ function generate_auv_runtime()
 %GENERATE_AUV_RUNTIME Deterministic MATLAB Coder driver for runtime facade.
 % PRETARGET / NOT_IN_PRODUCTION / NOT_CERTIFIED
 % Emits C++ facade sources for auv_runtime_codegen_init/reset/step into
-% firmware/stm32f411/generated/runtime/combined via one Coder project so
+% stm32/gomulu/generated/runtime/combined via one Coder project so
 % all three entry points share one ABI and generated type system.
 
     projRoot = local_project_root();
-    outRoot = fullfile(projRoot, 'firmware', 'stm32f411', 'generated', 'runtime');
+    outRoot = fullfile(projRoot, 'stm32', 'gomulu', 'generated', 'runtime');
     combinedDir = fullfile(outRoot, 'combined');
 
     local_fresh_output_dir(outRoot);
     mkdir(combinedDir);
-    addpath(projRoot);
+    addpath(genpath(fullfile(projRoot, 'matlab')));
 
     cfg = local_example_cfg();
     params = auv_runtime_codegen_init(cfg);

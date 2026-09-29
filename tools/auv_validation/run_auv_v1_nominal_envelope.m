@@ -11,7 +11,7 @@ function run_auv_v1_nominal_envelope()
 
     t_start = tic;
     proj_root = pwd;
-    addpath(proj_root);
+    addpath(genpath(fullfile(proj_root, 'matlab')));
 
     artifact_dir = fullfile(proj_root, 'artifacts', 'robustness_v2');
     if ~exist(artifact_dir, 'dir')

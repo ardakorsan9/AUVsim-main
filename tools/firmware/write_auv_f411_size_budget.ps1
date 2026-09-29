@@ -8,8 +8,8 @@ function Write-BudgetFailure {
 }
 
 $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
-$ElfPath = Join-Path $ProjectRoot 'firmware\stm32f411\cubemx\build\auv_f411.elf'
-$MapPath = Join-Path $ProjectRoot 'firmware\stm32f411\cubemx\build\auv_f411.map'
+$ElfPath = Join-Path $ProjectRoot 'stm32\gomulu\cubemx\build\auv_f411.elf'
+$MapPath = Join-Path $ProjectRoot 'stm32\gomulu\cubemx\build\auv_f411.map'
 $OutPath = Join-Path $ProjectRoot 'artifacts\firmware\auv_f411_size_budget.json'
 
 $FlashLimit = 524288
@@ -103,8 +103,8 @@ $report = [ordered]@{
     text_bytes           = $textBytes
     data_bytes           = $dataBytes
     bss_bytes            = $bssBytes
-    elf_path             = 'firmware/stm32f411/cubemx/build/auv_f411.elf'
-    map_path             = 'firmware/stm32f411/cubemx/build/auv_f411.map'
+    elf_path             = 'stm32/gomulu/cubemx/build/auv_f411.elf'
+    map_path             = 'stm32/gomulu/cubemx/build/auv_f411.map'
     source_tool          = 'arm-none-eabi-size'
     source_tool_version  = $versionLine
     generated_utc        = (Get-Date).ToUniversalTime().ToString('o')

@@ -26,7 +26,7 @@ function payload = auv_roll_validation_runner(harness, mode, opts)
 
     t_start = tic;
     proj_root = pwd;
-    addpath(proj_root);
+    addpath(genpath(fullfile(proj_root, 'matlab')));
 
     catalog = auv_roll_scenario_catalog('catalog');
     registry = auv_roll_metric_registry('registry');
